@@ -1,0 +1,58 @@
+title: 社内標準テクノロジー・カタログ
+width: 950
+xAxis:
+  label: 採用ステータス
+  values:
+    - label: 評価中（Evaluate）
+      color: "#ebf5fb"
+    - label: 推奨（Adopt）
+      color: "#e8f8f5"
+    - label: 凍結（Hold）
+      color: "#fef9e7"
+    - label: 廃止予定（Retire）
+      color: "#f9ebd2"
+yAxis:
+  label: カテゴリ
+  values:
+    - label: 言語・フレームワーク
+      color: "#fafafa"
+    - label: データベース
+      color: "#fafafa"
+    - label: フロントエンド
+      color: "#fafafa"
+items:
+  - id: lang-java21
+    label: Java 21 (LTS)
+    lane: 言語・フレームワーク
+    from: 推奨（Adopt）
+    to: 推奨（Adopt）
+    url: https://tech-radar.internal
+    color: "#1e8449"
+  - id: lang-python-ai
+    label: Python 3.12 (AI/データ分析用途)
+    lane: 言語・フレームワーク
+    from: 評価中（Evaluate）
+    to: 推奨（Adopt）
+    url: https://tech-radar.internal
+    color: "#2e86c1"
+  - id: db-postgres
+    label: PostgreSQL 16
+    lane: データベース
+    from: 推奨（Adopt）
+    to: 推奨（Adopt）
+    url: https://tech-radar.internal
+    color: "#1e8449"
+  - id: db-oracle-old
+    label: Oracle Database 19c（新規採用禁止）
+    lane: データベース
+    from: 凍結（Hold）
+    to: 廃止予定（Retire）
+    url: https://tech-radar.internal
+    color: "#b03a2e"
+  - id: fe-react
+    label: React 19 + Next.js
+    lane: フロントエンド
+    from: 評価中（Evaluate）
+    to: 評価中（Evaluate）
+    url: https://tech-radar.internal
+    color: "#2e86c1"

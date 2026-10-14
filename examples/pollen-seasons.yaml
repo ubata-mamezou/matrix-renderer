@@ -1,0 +1,40 @@
+title: 花粉濃度の季節傾向（目安）
+xAxis:
+  label: 季節
+  values:
+    - 冬
+    - 春
+    - 夏
+    - 秋
+yAxis:
+  label: 濃度傾向
+  values:
+    - 少ない
+    - 中程度
+    - 多い
+items:
+  - id: cedar-early
+    label: スギ（飛散初期）
+    lane: 少ない
+    from: 冬
+    to: 冬
+  - id: cedar-peak
+    label: スギ（ピーク）
+    lane: 多い
+    from: 春
+    to: 春
+  - id: cypress-peak
+    label: ヒノキ
+    lane: 多い
+    from: 春
+    to: 春
+  - id: grass-pollen
+    label: イネ科
+    lane: 中程度
+    from: 春
+    to: 夏
+  - id: ragweed
+    label: ブタクサ
+    lane: 中程度
+    from: 夏
+    to: 秋

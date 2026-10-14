@@ -1,0 +1,35 @@
+title: Full feature regression # マトリクスタイトル
+width: 800 # マトリクスの幅
+xAxis:
+  label: Lifecycle # x軸のラベル
+  values: # x軸の設定
+    - label: Plan # 列ラベル
+      color: "#d6eaf8" # 列の色
+    - Build # 列ラベル（色指定なし）
+    - label: Review
+      color: "#f4e2ad"
+yAxis: # y軸の設定
+  label: Category # y軸のラベル
+  values:
+    - label: Operations # 行のラベル
+      color: "#c5e4ec" # 行の色
+    - Data # 行のラベル（色指定なし）
+items: # プロットするアイテムの設定
+  - id: linked-guide # アイテムのID
+    label: Linked operational guide with a long label # アイテムのラベル
+    lane: Operations # アイテムが属する行
+    from: Plan # アイテムの開始列
+    to: Plan # アイテムの終了列
+    url: https://example.com/guide # アイテムのリンク
+    color: "#245080" # アイテムの色
+  - id: overlapping-guide
+    label: Overlapping guide
+    lane: Operations
+    from: Plan
+    to: Review
+    color: "#abc"
+  - id: data-tool
+    label: Data tool
+    lane: Data
+    from: Build
+    to: Review

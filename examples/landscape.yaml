@@ -1,0 +1,60 @@
+title: 社内標準DevOpsツールチェーン & 開発ガイドマップ
+width: 1000
+xAxis:
+  label: 開発フェーズ
+  values:
+    - label: 要件定義・計画
+      color: "#e8f8f5"
+    - label: 設計・ビルド
+      color: "#eaf2f8"
+    - label: テスト・検証
+      color: "#ebf5fb"
+    - label: デプロイ
+      color: "#f4ecf7"
+    - label: 運用・監視
+      color: "#fcf3cf"
+yAxis:
+  label: テクノロジースタック
+  values:
+    - label: アプリケーション開発
+      color: "#fdfefe"
+    - label: インフラ・CI/CD
+      color: "#fdfefe"
+    - label: セキュリティ・品質
+      color: "#fdfefe"
+items:
+  - id: git-guide
+    label: GitHub・Git利用規約ガイド
+    lane: アプリケーション開発
+    from: 要件定義・計画
+    to: 設計・ビルド
+    url: https://your-wiki.internal
+    color: "#2471a3"
+  - id: sonar-qube
+    label: SonarQube（静的解析コードレビュー）
+    lane: セキュリティ・品質
+    from: 設計・ビルド
+    to: テスト・検証
+    url: https://internal.net
+    color: "#e67e22"
+  - id: play-wright
+    label: Playwright（E2E自動テスト実行環境）
+    lane: セキュリティ・品質
+    from: テスト・検証
+    to: テスト・検証
+    url: https://your-wiki.internal
+    color: "#cb4335"
+  - id: argo-cd
+    label: ArgoCD（本番環境デプロイフロー）
+    lane: インフラ・CI/CD
+    from: デプロイ
+    to: デプロイ
+    url: https://internal.net
+    color: "#1e8449"
+  - id: datadog-ops
+    label: Datadog監視ダッシュボード
+    lane: インフラ・CI/CD
+    from: 運用・監視
+    to: 運用・監視
+    url: https://internal.net
+    color: "#6c3483"

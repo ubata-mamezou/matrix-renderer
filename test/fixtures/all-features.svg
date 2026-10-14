@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="361" viewBox="0 0 800 361">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<style>text{font-family:Arial,"Noto Sans JP","Yu Gothic",sans-serif;fill:#172c46}.axis{font-size:13px}.title{font-size:24px;font-weight:700}.lane-label{font-size:15px;font-weight:700}.bar-label{font-size:14px;font-weight:600}.item-link{cursor:pointer}.item-link text{text-decoration:underline}.item-link:hover rect,.item-link:focus-visible rect{fill:#c4def4;stroke:#145c91;stroke-width:2}</style>
+<text x="190" y="42" class="title">Full feature regression</text>
+<text x="190" y="78" class="axis" font-weight="700">Lifecycle</text>
+<text x="24" y="98" class="axis" font-weight="700">Category</text>
+<rect x="190" y="80" width="191.33333333333334" height="32" fill="#d6eaf8"/>
+<text x="285.6666666666667" y="101" class="axis" text-anchor="middle" style="fill:#172c46">Plan</text>
+<rect x="381.33333333333337" y="80" width="191.33333333333334" height="32" fill="#ebf1f6"/>
+<text x="477.00000000000006" y="101" class="axis" text-anchor="middle" style="fill:#172c46">Build</text>
+<rect x="572.6666666666667" y="80" width="191.33333333333334" height="32" fill="#f4e2ad"/>
+<text x="668.3333333333334" y="101" class="axis" text-anchor="middle" style="fill:#172c46">Review</text>
+<rect x="0" y="112" width="800" height="139" fill="#f4f7fa"/>
+<rect x="0" y="112" width="178" height="139" fill="#c5e4ec"/>
+<text x="18" y="186.5" class="lane-label" style="fill:#172c46">Operations</text>
+<line x1="0" y1="251" x2="800" y2="251" stroke="#d7e0e8"/>
+<rect x="0" y="251" width="800" height="66" fill="#ffffff"/>
+<rect x="0" y="251" width="178" height="66" fill="#ebf1f6"/>
+<text x="18" y="289" class="lane-label" style="fill:#172c46">Data</text>
+<line x1="0" y1="317" x2="800" y2="317" stroke="#d7e0e8"/>
+<line x1="190" y1="112" x2="190" y2="317" stroke="#d7e0e8"/>
+<line x1="381.33333333333337" y1="112" x2="381.33333333333337" y2="317" stroke="#d7e0e8"/>
+<line x1="572.6666666666667" y1="112" x2="572.6666666666667" y2="317" stroke="#d7e0e8"/>
+<line x1="764" y1="112" x2="764" y2="317" stroke="#d7e0e8"/>
+<g data-item-id="linked-guide"><a href="https://example.com/guide" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="Linked operational guide with a long labelを開く" class="item-link"><title>Linked operational guide with a long labelを開く</title>
+<rect x="194" y="128" width="183.33333333333334" height="57" rx="3" fill="#245080" stroke="#1a3a5c"/>
+<text x="285.6666666666667" y="145" class="bar-label" text-anchor="middle" style="fill:#ffffff">Linked operational g</text>
+<text x="285.6666666666667" y="162" class="bar-label" text-anchor="middle" style="fill:#ffffff">uide with a long lab</text>
+<text x="285.6666666666667" y="179" class="bar-label" text-anchor="middle" style="fill:#ffffff">el</text>
+</a></g>
+<g data-item-id="overlapping-guide">
+<rect x="194" y="201" width="566" height="34" rx="3" fill="#aabbcc" stroke="#7a8793"/>
+<text x="477" y="223.5" class="bar-label" text-anchor="middle" style="fill:#172c46">Overlapping guide</text>
+</g>
+<g data-item-id="data-tool">
+<rect x="385.33333333333337" y="267" width="374.6666666666667" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
+<text x="572.6666666666667" y="289.5" class="bar-label" text-anchor="middle" style="fill:#172c46">Data tool</text>
+</g>
+</svg>

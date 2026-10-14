@@ -1,0 +1,53 @@
+title: 年間イベントの開催・実施時期（月単位）
+xAxis:
+  label: 月
+  values:
+    - 1月
+    - 2月
+    - 3月
+    - 4月
+    - 5月
+    - 6月
+    - 7月
+    - 8月
+    - 9月
+    - 10月
+    - 11月
+    - 12月
+yAxis:
+  label: イベント分類
+  values:
+    - 季節行事
+    - 地域イベント
+    - 商業イベント
+items:
+  - id: new-year
+    label: 初詣
+    lane: 季節行事
+    from: 1月
+    to: 1月
+  - id: cherry-blossom
+    label: 花見・桜まつり
+    lane: 地域イベント
+    from: 3月
+    to: 4月
+  - id: golden-week
+    label: ゴールデンウィーク
+    lane: 季節行事
+    from: 4月
+    to: 5月
+  - id: summer-festival
+    label: 夏祭り・花火大会
+    lane: 地域イベント
+    from: 7月
+    to: 8月
+  - id: halloween
+    label: ハロウィン企画
+    lane: 商業イベント
+    from: 10月
+    to: 10月
+  - id: illuminations
+    label: イルミネーション
+    lane: 季節行事
+    from: 11月
+    to: 12月

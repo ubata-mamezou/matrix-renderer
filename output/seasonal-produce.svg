@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="354" viewBox="0 0 1440 354">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<style>text{font-family:Arial,"Noto Sans JP","Yu Gothic",sans-serif;fill:#172c46}.axis{font-size:13px}.title{font-size:24px;font-weight:700}.lane-label{font-size:15px;font-weight:700}.bar-label{font-size:14px;font-weight:600}.item-link{cursor:pointer}.item-link text{text-decoration:underline}.item-link:hover rect,.item-link:focus-visible rect{fill:#c4def4;stroke:#145c91;stroke-width:2}</style>
+<text x="190" y="42" class="title">旬の食材カレンダー（目安）</text>
+<text x="190" y="78" class="axis" font-weight="700">月</text>
+<text x="24" y="98" class="axis" font-weight="700">食材分類</text>
+<rect x="190" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="240.58333333333334" y="101" class="axis" text-anchor="middle" style="fill:#172c46">1月</text>
+<rect x="291.1666666666667" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="341.75" y="101" class="axis" text-anchor="middle" style="fill:#172c46">2月</text>
+<rect x="392.33333333333337" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="442.9166666666667" y="101" class="axis" text-anchor="middle" style="fill:#172c46">3月</text>
+<rect x="493.5" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="544.0833333333334" y="101" class="axis" text-anchor="middle" style="fill:#172c46">4月</text>
+<rect x="594.6666666666667" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="645.2500000000001" y="101" class="axis" text-anchor="middle" style="fill:#172c46">5月</text>
+<rect x="695.8333333333334" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="746.4166666666667" y="101" class="axis" text-anchor="middle" style="fill:#172c46">6月</text>
+<rect x="797" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="847.5833333333334" y="101" class="axis" text-anchor="middle" style="fill:#172c46">7月</text>
+<rect x="898.1666666666667" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="948.7500000000001" y="101" class="axis" text-anchor="middle" style="fill:#172c46">8月</text>
+<rect x="999.3333333333334" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="1049.9166666666667" y="101" class="axis" text-anchor="middle" style="fill:#172c46">9月</text>
+<rect x="1100.5" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="1151.0833333333333" y="101" class="axis" text-anchor="middle" style="fill:#172c46">10月</text>
+<rect x="1201.6666666666667" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="1252.25" y="101" class="axis" text-anchor="middle" style="fill:#172c46">11月</text>
+<rect x="1302.8333333333335" y="80" width="101.16666666666667" height="32" fill="#ebf1f6"/>
+<text x="1353.4166666666667" y="101" class="axis" text-anchor="middle" style="fill:#172c46">12月</text>
+<rect x="0" y="112" width="1440" height="66" fill="#f4f7fa"/>
+<rect x="0" y="112" width="178" height="66" fill="#ebf1f6"/>
+<text x="18" y="150" class="lane-label" style="fill:#172c46">果物</text>
+<line x1="0" y1="178" x2="1440" y2="178" stroke="#d7e0e8"/>
+<rect x="0" y="178" width="1440" height="66" fill="#ffffff"/>
+<rect x="0" y="178" width="178" height="66" fill="#ebf1f6"/>
+<text x="18" y="216" class="lane-label" style="fill:#172c46">野菜</text>
+<line x1="0" y1="244" x2="1440" y2="244" stroke="#d7e0e8"/>
+<rect x="0" y="244" width="1440" height="66" fill="#f4f7fa"/>
+<rect x="0" y="244" width="178" height="66" fill="#ebf1f6"/>
+<text x="18" y="282" class="lane-label" style="fill:#172c46">魚介</text>
+<line x1="0" y1="310" x2="1440" y2="310" stroke="#d7e0e8"/>
+<line x1="190" y1="112" x2="190" y2="310" stroke="#d7e0e8"/>
+<line x1="291.1666666666667" y1="112" x2="291.1666666666667" y2="310" stroke="#d7e0e8"/>
+<line x1="392.33333333333337" y1="112" x2="392.33333333333337" y2="310" stroke="#d7e0e8"/>
+<line x1="493.5" y1="112" x2="493.5" y2="310" stroke="#d7e0e8"/>
+<line x1="594.6666666666667" y1="112" x2="594.6666666666667" y2="310" stroke="#d7e0e8"/>
+<line x1="695.8333333333334" y1="112" x2="695.8333333333334" y2="310" stroke="#d7e0e8"/>
+<line x1="797" y1="112" x2="797" y2="310" stroke="#d7e0e8"/>
+<line x1="898.1666666666667" y1="112" x2="898.1666666666667" y2="310" stroke="#d7e0e8"/>
+<line x1="999.3333333333334" y1="112" x2="999.3333333333334" y2="310" stroke="#d7e0e8"/>
+<line x1="1100.5" y1="112" x2="1100.5" y2="310" stroke="#d7e0e8"/>
+<line x1="1201.6666666666667" y1="112" x2="1201.6666666666667" y2="310" stroke="#d7e0e8"/>
+<line x1="1302.8333333333335" y1="112" x2="1302.8333333333335" y2="310" stroke="#d7e0e8"/>
+<line x1="1404" y1="112" x2="1404" y2="310" stroke="#d7e0e8"/>
+<g data-item-id="strawberries">
+<rect x="194" y="128" width="295.5" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
+<text x="341.75" y="150.5" class="bar-label" text-anchor="middle" style="fill:#172c46">いちご</text>
+</g>
+<g data-item-id="cherries">
+<rect x="598.6666666666667" y="128" width="194.33333333333334" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
+<text x="695.8333333333334" y="150.5" class="bar-label" text-anchor="middle" style="fill:#172c46">さくらんぼ</text>
+</g>
+<g data-item-id="grapes">
+<rect x="902.1666666666667" y="128" width="295.5" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
+<text x="1049.9166666666667" y="150.5" class="bar-label" text-anchor="middle" style="fill:#172c46">ぶどう</text>
+</g>
+<g data-item-id="asparagus">
+<rect x="396.33333333333337" y="194" width="295.5" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
+<text x="544.0833333333334" y="216.5" class="bar-label" text-anchor="middle" style="fill:#172c46">アスパラガス</text>
+</g>
+<g data-item-id="corn">
+<rect x="801" y="194" width="194.33333333333334" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
+<text x="898.1666666666666" y="216.5" class="bar-label" text-anchor="middle" style="fill:#172c46">とうもろこし</text>
+</g>
+<g data-item-id="pacific-saury">
+<rect x="1003.3333333333334" y="260" width="295.5" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
+<text x="1151.0833333333335" y="282.5" class="bar-label" text-anchor="middle" style="fill:#172c46">さんま</text>
+</g>
+</svg>

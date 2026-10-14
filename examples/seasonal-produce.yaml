@@ -1,0 +1,53 @@
+title: 旬の食材カレンダー（目安）
+xAxis:
+  label: 月
+  values:
+    - 1月
+    - 2月
+    - 3月
+    - 4月
+    - 5月
+    - 6月
+    - 7月
+    - 8月
+    - 9月
+    - 10月
+    - 11月
+    - 12月
+yAxis:
+  label: 食材分類
+  values:
+    - 果物
+    - 野菜
+    - 魚介
+items:
+  - id: strawberries
+    label: いちご
+    lane: 果物
+    from: 1月
+    to: 3月
+  - id: asparagus
+    label: アスパラガス
+    lane: 野菜
+    from: 3月
+    to: 5月
+  - id: cherries
+    label: さくらんぼ
+    lane: 果物
+    from: 5月
+    to: 6月
+  - id: corn
+    label: とうもろこし
+    lane: 野菜
+    from: 7月
+    to: 8月
+  - id: grapes
+    label: ぶどう
+    lane: 果物
+    from: 8月
+    to: 10月
+  - id: pacific-saury
+    label: さんま
+    lane: 魚介
+    from: 9月
+    to: 11月

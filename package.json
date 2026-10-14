@@ -1,0 +1,26 @@
+{
+  "name": "matrix-renderer",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "matrix-renderer": "./src/cli.js"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "files": [
+    "src",
+    "examples"
+  ],
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "render": "node src/cli.js render",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "sharp": "^0.35.5",
+    "yaml": "^2.8.1"
+  }
+}

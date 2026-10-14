@@ -1,0 +1,45 @@
+title: 障害対応で参照する手順・ツール
+xAxis:
+  label: 対応段階
+  values:
+    - 平常時
+    - 検知
+    - 初動
+    - 原因調査
+    - 復旧
+    - 振り返り
+yAxis:
+  label: 分類
+  values:
+    - 連絡・判断
+    - アプリケーション
+    - インフラ
+    - データ
+    - セキュリティ
+items:
+  - id: on-call-contacts
+    label: オンコール連絡先
+    lane: 連絡・判断
+    from: 平常時
+    to: 初動
+    url: https://example.com/runbooks/on-call
+  - id: severity-guide
+    label: 重大度判定表
+    lane: 連絡・判断
+    from: 検知
+    to: 初動
+  - id: log-investigation
+    label: アプリログ調査手順
+    lane: アプリケーション
+    from: 原因調査
+    to: 復旧
+  - id: database-restore
+    label: データベース復旧手順
+    lane: データ
+    from: 原因調査
+    to: 復旧
+  - id: security-checklist
+    label: セキュリティ事故対応表
+    lane: セキュリティ
+    from: 初動
+    to: 振り返り
