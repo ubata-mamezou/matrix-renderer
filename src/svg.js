@@ -72,7 +72,7 @@ function itemColors(color, defaultFill = COLORS.bar, defaultStroke = COLORS.barS
 
 /** @param {string} character @returns {number} */
 function characterWidth(character) {
-  return /[\u0000-\u00ff]/.test(character) ? 0.58 : 1;
+  return /[\u0020-\u007e\u00a0-\u00ff]/.test(character) ? 0.58 : 1;
 }
 
 /**
@@ -132,6 +132,7 @@ function text(x, y, value, attributes = '') {
 
 /**
  * 検証済みの入力データからSVG文字列と出力寸法を生成する。
+ * 
  * @param {MatrixData} data
  * @returns {{ svg: string, width: number, height: number }}
  */

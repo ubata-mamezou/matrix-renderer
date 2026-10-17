@@ -5,6 +5,7 @@ import process from 'node:process';
 import { loadInput } from './input.js';
 import { renderSvg } from './svg.js';
 import { renderPng } from './png.js';
+import { throwErr } from './errors/error.js';
 
 /**
  * @typedef {Object} CliOptions
@@ -12,13 +13,9 @@ import { renderPng } from './png.js';
  * @property {string} prefix 出力ファイルの拡張子を除いた絶対パス
  */
 
-/** @param {string} message @returns {never} */
-function fail(message) {
-  throw new Error(message);
-}
-
 /**
  * CLI引数を解析する。ヘルプ表示時はnullを返す。
+ * 
  * @param {string[]} args
  * @returns {CliOptions | null}
  */
@@ -31,6 +28,8 @@ function parseArguments(args) {
     '  --out <prefix>  Output path without an extension (writes .svg and .png)',
     '  -h, --help      Show this help',
   ].join('\n');
+
+  // ヘルプ表示
   if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
     process.stdout.write(`${usage}\n`);
     return null;
@@ -40,9 +39,9 @@ function parseArguments(args) {
   if (args[0] === 'render') {
     commandArgs = args.slice(1);
   } else if (args[0] !== '--' && args[0].startsWith('-')) {
-    fail(`不明なオプションです: ${args[0]}\n${usage}`);
+    throwError.biz(`不明なオプションです: ${args[0]}\n${usage}`);
   } else if (!args[0].endsWith('.yaml') && !args[0].endsWith('.yml')) {
-    fail(`不明なコマンドです: ${args[0]}\n${usage}`);
+    throwError.biz(`不明なコマンドです: ${args[0]}\n${usage}`);
   }
 
   const positional = [];
@@ -55,15 +54,15 @@ function parseArguments(args) {
     }
     if (commandArgs[index] === '--out') {
       output = commandArgs[index + 1];
-      if (!output) fail('--outの後に出力先を指定してください。');
+      if (!output) throwError.biz('--outの後に出力先を指定してください。');
       index += 1;
     } else if (commandArgs[index].startsWith('-')) {
-      fail(`不明なオプションです: ${commandArgs[index]}\n${usage}`);
+      throwError.biz(`不明なオプションです: ${commandArgs[index]}\n${usage}`);
     } else {
       positional.push(commandArgs[index]);
     }
   }
-  if (positional.length !== 1) fail(`入力YAMLを1件指定してください。\n${usage}`);
+  if (positional.length !== 1) throwError.biz(`入力YAMLを1件指定してください。\n${usage}`);
   const input = resolve(positional[0]);
   const prefix = resolve(output ?? `${dirname(input)}/${basename(input, extname(input))}`);
   return { input, prefix };
@@ -73,12 +72,15 @@ try {
   const options = parseArguments(process.argv.slice(2));
   if (options) {
     const { input, prefix } = options;
-    const data = await loadInput(input);
-    const { svg, width, height } = renderSvg(data);
-    const png = await renderPng(svg);
-    const svgPath = `${prefix}.svg`;
-    const pngPath = `${prefix}.png`;
     await mkdir(dirname(prefix), { recursive: true });
+    const data = await loadInput(input);
+
+    const svgPath = `${prefix}.svg`;
+    const { svg, width, height } = renderSvg(data);
+
+    const pngPath = `${prefix}.png`;
+    const png = await renderPng(svg);
+
     await Promise.all([
       writeFile(svgPath, svg, 'utf8'),
       writeFile(pngPath, png),

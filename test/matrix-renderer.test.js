@@ -9,6 +9,7 @@ import sharp from 'sharp';
 import { loadInput, validate } from '../src/input.js';
 import { renderPng } from '../src/png.js';
 import { renderSvg } from '../src/svg.js';
+import { message } from '../src/adapter/web/url.js';
 
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const projectDirectory = dirname(testDirectory);
@@ -41,9 +42,9 @@ test('validation rejects invalid item and width values', async (context) => {
     ['duplicate item id', (data) => { data.items[1].id = data.items[0].id; }, /重複しています/],
     ['unknown lane', (data) => { data.items[0].lane = 'Unknown'; }, /yAxis.valuesにありません/],
     ['reversed interval', (data) => { data.items[0].from = 'Review'; data.items[0].to = 'Plan'; }, /fromはtoより前/],
-    ['non-http URL', (data) => { data.items[0].url = 'ftp://example.com'; }, /HTTPまたはHTTPS/],
-    ['invalid item color', (data) => { data.items[0].color = 'red'; }, /#RGBまたは#RRGGBB/],
-    ['width outside the supported range', (data) => { data.width = 699; }, /700から4000/],
+    ['non-http URL', (data) => { data.items[0].url = 'ftp://example.com'; }, message.badProtocol],
+    ['invalid item color', (data) => { data.items[0].color = 'red'; }, /#RGB or #RRGGBB/],
+    ['width outside the supported range', (data) => { data.width = 699; }, /between 700 and 4000/],
   ];
 
   for (const [name, mutate, expectedError] of cases) {

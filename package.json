@@ -16,11 +16,17 @@
     "node": ">=20.9.0"
   },
   "scripts": {
+    "build:dev": "npm run lint && npm run test && npm run render:examples",
+    "lint": "biome lint src test --fix",
     "render": "node src/cli.js render",
-    "test": "node --test"
+    "render:examples": "bash render-examples.sh",
+    "test": "node --test && bash test-behavior.sh"
   },
   "dependencies": {
     "sharp": "^0.35.5",
     "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15"
   }
 }
