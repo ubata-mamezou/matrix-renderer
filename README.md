@@ -1,19 +1,23 @@
 <div align="center">
 
-# 📊 matrix-renderer - A tool that generates matrix image files (PNG/SVG) from YAML
+# 📊 matrix-renderer
+
+</div>
 
 ## Overview / 概要
 
-YAMLからマトリクスイメージファイル（png/svg）を生成するCLIツールです。
-YAMLには、マトリクスのX軸、Y軸、アイテムのテキストや色を指定できます。
+**A tool that generates matrix image files (PNG/SVG) from YAML.**
 
-<p align="center">
+YAMLからマトリクスイメージファイル（png/svg）を生成するCLIツールです。  
 
-  ![sample](output/landscape.svg)
+**指定可能な値**
+* タイトル
+* イメージ幅
+* X軸のラベル、テキスト、色
+* Y軸のラベル、テキスト、色
+* プロットするアイテムのテキスト、配置行、X軸に対応した幅指定、色、URL
 
-</p>
-
-</div>
+![sample](output/landscape.svg)
 
 ## Environment / 動作環境
 
