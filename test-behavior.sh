@@ -76,7 +76,7 @@ start_test_case "4-1. input and output(file) parameter" "output image(to root di
 npm run render -- $TEST_YAML_FILE --out $OTHER_FILE_NAME >> $TEST_LOG_FILE 2>&1
 mv $OTHER_FILE_NAME.png $TEST_DIR/case4-1/$OTHER_FILE_NAME.png
 mv $OTHER_FILE_NAME.svg $TEST_DIR/case4-1/$OTHER_FILE_NAME.svg
-assert_exists_file $TEST_DIR/case4-1/other-name.png $TEST_DIR/case4-1/other-name.svg
+assert_exists_file $TEST_DIR/case4-1/$OTHER_FILE_NAME.png $TEST_DIR/case4-1/$OTHER_FILE_NAME.svg
 
 start_test_case "4-2. input and output(directory and file) parameter" "output image(to specified directory)"
 npm run render -- $TEST_YAML_FILE --out $TEST_DIR/case4-2/$OTHER_FILE_NAME >> $TEST_LOG_FILE 2>&1
