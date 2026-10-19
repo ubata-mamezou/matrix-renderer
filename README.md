@@ -1,12 +1,11 @@
 <div align="center">
 
-# 📊 matrix-renderer
+# 📊 matrix-renderer - A tool that generates matrix image files (PNG/SVG) from YAML
 
-マトリクスのX軸、Y軸、プロット値をYAMLで定義し、SVGおよびPNG形式で出力するCLIです。
+## Overview / 概要
 
-[![npm version](https://shields.io)](https://npmjs.com)
-[![Node.js Version](https://shields.io)](https://nodejs.org)
-[![License: MIT](https://shields.io)](https://opensource.org)
+YAMLからマトリクスイメージファイル（png/svg）を生成するCLIツールです。
+YAMLには、マトリクスのX軸、Y軸、アイテムのテキストや色を指定できます。
 
 <p align="center">
 
@@ -16,22 +15,20 @@
 
 </div>
 
----
-## 動作環境
+## Environment / 動作環境
 
 * Node.js 24+
 
----
-## 🚀 利用手順
+## 🚀 How to use / 利用手順
 
 1. マトリクス設定ファイルを作成する
    マトリクスを作成するための設定値を定義したファイルを作成します。
-      * テンプレートは[こちら](#️-yaml設定テンプレート)
-      * サンプルは[こちら](#️-サンプル)
+      * テンプレートは[こちら](#️-yaml-template--yaml設定テンプレート)
+      * サンプルは[こちら](#️-sample--サンプル)
 2. イメージファイルを生成する
-   用途に合う[コマンド](#-コマンド)を使用してイメージファイルを生成します。
+   用途に合う[コマンド](#-command--コマンド)を使用してイメージファイルを生成します。
 
-## ⌘ コマンド
+## ⌘ Command / コマンド
 
 イメージファイルを生成するコマンド例です。
 
@@ -87,9 +84,7 @@ Options:
   -h, --help      Show this help
 ```
 
----
-
-## 🛠️ YAML設定テンプレート
+## 🛠️ YAML template / YAML設定テンプレート
 
 ```yaml
 title: テンプレートです # * マトリクスタイトル
@@ -125,15 +120,11 @@ items: # * プロットするアイテムの設定
   * from, to: アイテムの描画範囲。fromはtoより左にあたるラベルまたは同値でなければいけません。
   * URL: アイテムに埋め込みます。クリックすると新しいタブで開きます。（HTTPまたはHTTPS）※SVGのみ
 
-## 🛠️ サンプル
+## 🛠️ Sample / サンプル
 
 [`examples/`](examples/)に入力ファイル、  
 [`output/`](output/)に生成したイメージファイルを格納しています。
 
-![landscape.svg](output/landscape.svg)
-
----
-
-## 📄 ライセンス
+## 📄 License / ライセンス
 
 [MIT License](LICENSE) © 2026 ubata-mamezou
