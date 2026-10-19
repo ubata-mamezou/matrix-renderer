@@ -1,56 +1,83 @@
 import { throwErr } from "../errors/error.js";
 
 /**
+ * 値を判定する述語関数。
+ * @callback TypeCheck
+ * @param {*} value 判定対象
+ * @returns {boolean} 判定結果
+ */
+
+/**
  * 値の状態をチェックする
  */
 export const is = {
+  /**
+   * 値が指定されたチェックのいずれかに該当するかチェックする
+   * @param {any} value
+   * @param {...TypeCheck} checks
+   */
+  anyMatch: (value, ...checks) => checks.some((check) => check(value)),
   /**
    * 型チェック
    */
   type: {
     /**
-     * undefined or null
-     * @param {*} v  チェック対象値
+     * not undefined or null
+     * @param {*} value  チェック対象値
      * @returns {boolean} チェック結果（true: チェックOK）
      */
-    invalid: (v) => v === undefined || v === null,
-    string: (v) => typeof v === "string",
+    valid: (value) => value !== undefined && value !== null,
+    invalid: (value) => !is.type.valid(value),
+    string: (value) => typeof value === "string",
     /**
      * 数値であることをチェックする。
      *
-     * @param {*} v  チェック対象値
+     * @param {*} value  チェック対象値
      * @returns {boolean} チェック結果（true: チェックOK）
      */
-    number: (v) => typeof v === "number" && !Number.isNaN(v),
-    integer: (v) => !Number.isInteger(v),
-    boolean: (v) => typeof v === "boolean",
-    object: (v) => v !== null && typeof v === "object" && !Array.isArray(v),
-    array: (v) => typeof v === "object" && Array.isArray(v),
-    function: (v) => typeof v === "function",
+    number: (value) => typeof value === "number" && !Number.isNaN(value),
+    integer: (value) => !Number.isInteger(value),
+    boolean: (value) => typeof value === "boolean",
+    object: (value) =>
+      value !== null && typeof value === "object" && !Array.isArray(value),
+    array: (value) => typeof value === "object" && Array.isArray(value),
+    function: (value) => typeof value === "function",
+    /**
+     * 値が指定された型のいずれかであることを検証する。
+     * @param {any} value
+     * @param {...TypeCheck} checks
+     */
+    lotsType: (value, ...checks) => checks.some((check) => check(value)),
+  },
+  number: {
+    inRange: (value, min, max) =>
+      is.type.number(value) && min <= value && value <= max,
   },
   /**
    * Emptyチェック
    *
-   * 文字列の場合は空文字列、配列の場合は空配列をEmptyとみなす。
-   * @param {*} v  チェック対象値
+   * stringの場合は空文字列、arrayの場合は空配列をEmptyとみなす。
+   * 指定されたチェックと型が異なる場合もEmptyとみなす。
+   * @param {*} value  チェック対象値
    * @returns {boolean} チェック結果（true: チェックOK）
    */
   empty: {
-    string: (v) => !is.notEmpty.string(v),
-    number: (v) => !is.notEmpty.number(v),
-    array: (v) => !is.notEmpty.array(v),
+    string: (value) => !is.notEmpty.string(value),
+    number: (value) => !is.notEmpty.number(value),
+    array: (value) => !is.notEmpty.array(value),
   },
   /**
    * Not Emptyチェック。チェック内容は {@link is.empty} 参照。
-   * @param {*} v  チェック対象値
+   * @param {*} value  チェック対象値
    * @returns {boolean} チェック結果（true: チェックOK）
    */
   notEmpty: {
-    string: (v) =>
-      !is.type.invalid(v) && is.type.string(v) && v.trim().length > 0,
-    number: (v) => !is.type.invalid(v) && is.type.number(v),
-    object: (v) => !is.type.invalid(v) && is.type.object(v),
-    array: (v) => !is.type.invalid(v) && is.type.array(v) && v.length > 0,
+    string: (value) =>
+      is.type.valid(value) && is.type.string(value) && value.trim().length > 0,
+    number: (value) => is.type.valid(value) && is.type.number(value),
+    object: (value) => is.type.valid(value) && is.type.object(value),
+    array: (value) =>
+      is.type.valid(value) && is.type.array(value) && value.length > 0,
   },
   /**
    * 形式チェック
@@ -61,141 +88,153 @@ export const is = {
      * @param {string} value チェック対象値
      * @returns {boolean} チェック結果（true: チェックOK）
      */
-    rgb: (v) =>
-      is.type.string(v) && /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v),
+    rgb: (value) =>
+      is.type.string(value) &&
+      /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value),
   },
 };
 
 export const assert = {
+  /**
+   * 値が指定されたチェックのいずれかに該当するかチェックする
+   * @param {string} label チェック対象項目名
+   * @param {any} value チェック対象値
+   * @param {...TypeCheck} checks チェック関数
+   * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
+   */
+  anyMatch: (label, value, ...checks) => {
+    if (!is.anyMatch(value, ...checks))
+      throwErr.validate("validation.anyMatch", { label, value });
+  },
   type: {
-    string: (label, v) => {
-      if (!is.type.string(v))
-        throwErr.validate(`${label} is not string. (${v})`);
+    valid: (label, value) => {
+      if (is.type.invalid(value))
+        throwErr.validate("validation.type.valid", { label, value });
     },
-    object: (label, v) => {
-      if (!is.type.object(v))
-        throwErr.validate(`${label} is not object. (${v})`);
+    string: (label, value) => {
+      if (!is.type.string(value))
+        throwErr.validate("validation.type.string", { label, value });
     },
-    array: (label, v) => {
-      if (!is.type.array(v)) throwErr.validate(`${label} is not array. (${v})`);
+    object: (label, value) => {
+      if (!is.type.object(value))
+        throwErr.validate("validation.type.object", {
+          label,
+          value: JSON.stringify(value),
+        });
+    },
+    array: (label, value) => {
+      if (!is.type.array(value))
+        throwErr.validate("validation.type.array", {
+          label,
+          value: JSON.stringify(value),
+        });
     },
   },
   /**
    * 値がEmptyか検証する。チェック内容は {@link is.empty} 参照。
+   * @param {string} label チェック対象項目名
    * @param {*} value
    * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
    */
   empty: {
-    string: (label, v) => {
-      if (!is.empty.string(v))
-        throwErr.validate(`${label} is not empty. (${v})`);
+    string: (label, value) => {
+      if (!is.empty.string(value))
+        throwErr.validate("validation.empty", { label });
     },
-    array: (label, v) => {
-      if (!is.empty.array(v))
-        throwErr.validate(`${label} is not empty. (${v})`);
+    array: (label, value) => {
+      if (!is.empty.array(value))
+        throwErr.validate("validation.empty", { label });
+    },
+  },
+  number: {
+    /**
+     * 値が指定された範囲内であることを検証する。
+     *
+     * @param {string} label
+     * @param {integer} value
+     * @param {integer} min
+     * @param {integer} max
+     */
+    inRange: (label, value, min, max) => {
+      if (!is.number.inRange(value, min, max))
+        throwErr.validate("validation.number.inRange", { label, min, max });
+    },
+  },
+  array: {
+    /**
+     * 指定されたキー項目が配列の要素が一意であることを検証する。
+     *
+     * @param {string} label 項目名
+     * @param {Array} value 検証対象値
+     * @param {string} key キー項目名
+     * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
+     */
+    uniqueBy: (label, value, key) => {
+      if (new Set(value.map((value) => value[key])).size !== value.length)
+        throwErr.validate("validation.array.uniqueBy", { label, value: key });
     },
   },
   /**
    * 値がEmptyでないか検証する。チェック内容は {@link is.empty} 参照。
+   * @param {string} label チェック対象項目名
    * @param {*} value  チェック対象値
    * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
    */
   notEmpty: {
-    invalid: (label, v) => {
-      if (!is.notEmpty.invalid(v))
-        throwErr.validate(`${label} is empty. (${v})`);
+    invalid: (label, value) => {
+      if (!is.notEmpty.invalid(value))
+        throwErr.validate("validation.notEmpty", { label });
     },
-    string: (label, v) => {
-      if (!is.notEmpty.string(v))
-        throwErr.validate(`${label} is empty. (${v})`);
+    string: (label, value) => {
+      if (!is.notEmpty.string(value))
+        throwErr.validate("validation.notEmpty", { label });
     },
-    object: (label, v) => {
-      if (!is.notEmpty.object(v))
-        throwErr.validate(`${label} is empty. (${v})`);
+    object: (label, value) => {
+      if (!is.notEmpty.object(value))
+        throwErr.validate("validation.notEmpty", { label });
     },
-    array: (label, v) => {
-      if (!is.notEmpty.array(v)) throwErr.validate(`${label} is empty. (${v})`);
+    array: (label, value) => {
+      if (!is.notEmpty.array(value))
+        throwErr.validate("validation.notEmpty", { label });
     },
   },
   format: {
-
-    /**
-     * 配列の要素が一意であることを検証する。
-     *
-     * @param {string} label 項目名
-     * @param {Array} vArray 検証対象値
-     * @param {string} key キー項目名
-     * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
-     */
-    uniqueArray: (label, v, key) => {
-      if (new Set(v.map((value) => value[key])).size !== v.length)
-            throwErr.validate(`${label}に重複があります。`);
-    },
     /**
      * RGBカラーコードの形式を検証する。
      * @param {string} label 項目名
-     * @param {string} v 検証対象値
+     * @param {string} value 検証対象値
      * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
      */
-    rgb: (label, v) => {
-      if (!is.format.rgb(v))
-        throwErr.validate(`${label} is not #RGB or #RRGGBB style. (${v})`);
+    rgb: (label, value) => {
+      if (!is.format.rgb(value))
+        throwErr.validate("validation.format.rgb", { label, value });
     },
   },
 };
 
-/**
- * 値が指定された型のいずれかであることを検証する。
- *
- * @param {string} name
- * @param {any} value
- * @param  {...string} types
- */
-export function isLotsType(name, value, ...types) {
-  if (!types.includes(typeof value)) {
-    throwErr.validate(
-      `${name}は${types.join("または")}型でなければいけません。`,
-    );
-  }
-}
-
-/**
- * オブジェクトが指定された属性を持っているかを検証する。
- *
- * @param {string} objectName
- * @param {object} value
- * @param {string} attributeName
- * @param {...string} attributeType
- * @throws {Error} 属性が存在しない場合や型が違う場合にエラーをスローする。
- */
-export function hasAttribute(
-  objectName,
-  value,
-  attributeName,
-  ...attributeType
-) {
-  if (!Object.hasOwn(value, attributeName)) {
-    throwErr.validate(`${objectName}.${attributeName}が存在しません。`);
-  }
-  isLotsType(
-    `${objectName}.${attributeName}`,
-    value[attributeName],
-    ...attributeType,
-  );
-}
-
-function range(v, min, max) {
-  return is.type.number(v) && min <= v && v <= max;
-}
-/**
- * 値が指定された範囲内であることを検証する。
- *
- * @param {string} label
- * @param {integer} v
- * @param {integer} min
- * @param {integer} max
- */
-export function assertRange(label, v, min, max) {
-  if (!range(v, min, max))
-    throwErr.validate(`${label} between ${min} and ${max}`);
-}
+// /**
+//  * オブジェクトが指定された属性を持っているかを検証する。
+//  *
+//  * @param {string} objectName
+//  * @param {object} value
+//  * @param {string} attributeName
+//  * @param {...string} attributeType
+//  * @throws {Error} 属性が存在しない場合や型が違う場合にエラーをスローする。
+//  */
+// export function hasAttribute(
+//   objectName,
+//   value,
+//   attributeName,
+//   ...attributeType
+// ) {
+//   if (!Object.hasOwn(value, attributeName)) {
+//     throwErr.validate("validation.hasAttribute", {
+//       label: `${objectName}.${attributeName}`,
+//     });
+//   }
+//   isLotsType(
+//     `${objectName}.${attributeName}`,
+//     value[attributeName],
+//     ...attributeType,
+//   );
+// }

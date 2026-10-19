@@ -3,13 +3,12 @@ import { spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { loadInput, validate } from '../src/input.js';
 import { renderPng } from '../src/png.js';
 import { renderSvg } from '../src/svg.js';
-import { message } from '../src/adapter/web/url.js';
 
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const projectDirectory = dirname(testDirectory);
@@ -39,19 +38,26 @@ test('renders a PNG with the SVG dimensions', async () => {
 
 test('validation rejects invalid item and width values', async (context) => {
   const cases = [
-    ['duplicate item id', (data) => { data.items[1].id = data.items[0].id; }, /重複しています/],
+    ['duplicate item id', (data) => { data.items[1].id = data.items[0].id; }, 'array.uniqueBy'],
     ['unknown lane', (data) => { data.items[0].lane = 'Unknown'; }, /yAxis.valuesにありません/],
     ['reversed interval', (data) => { data.items[0].from = 'Review'; data.items[0].to = 'Plan'; }, /fromはtoより前/],
-    ['non-http URL', (data) => { data.items[0].url = 'ftp://example.com'; }, message.badProtocol],
-    ['invalid item color', (data) => { data.items[0].color = 'red'; }, /#RGB or #RRGGBB/],
-    ['width outside the supported range', (data) => { data.width = 699; }, /between 700 and 4000/],
+    ['non-http URL', (data) => { data.items[0].url = 'ftp://example.com'; }, 'url.badProtocol'],
+    ['invalid item color', (data) => { data.items[0].color = 'red'; }, 'validation.format.rgb'],
+    ['width outside the supported range', (data) => { data.width = 699; }, 'validation.number.inRange'],
   ];
 
   for (const [name, mutate, expectedError] of cases) {
     await context.test(name, async () => {
       const data = structuredClone(await loadInput(fixturePath));
       mutate(data);
-      assert.throws(() => validate(data), expectedError);
+      if (expectedError && typeof expectedError === 'object' && 'messageId' in expectedError) {
+        assert.throws(() => validate(data), (error) => {
+          assert.equal(error.messageId, { messageId: expectedError.messageId });
+          return true;
+        });
+      } else {
+        assert.throws(() => validate(data), expectedError);
+      }
     });
   }
 });
@@ -102,7 +108,7 @@ test('CLI reports invalid YAML input and does not write artifacts', async () => 
     });
 
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /Error: xAxisにはlabelと1件以上のvaluesが必要です/);
+    assert.match(result.stderr, /Error: xAxis.label is empty/);
     await assert.rejects(readFile(`${outputPrefix}.svg`), { code: 'ENOENT' });
     await assert.rejects(readFile(`${outputPrefix}.png`), { code: 'ENOENT' });
   } finally {

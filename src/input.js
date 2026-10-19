@@ -1,7 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { parse } from "yaml";
-import { is, assert, assertRange } from "./validation/validator.js";
+import { is, assert } from "./validation/validator.js";
 import { toUrl } from "./adapter/web/url.js";
+import { throwErr } from "./errors/error.js";
 
 /**
  * @typedef {Object} AxisValue
@@ -47,14 +48,17 @@ function fail(message) {
  * @returns {AxisValue[]}
  */
 export function axisValues(axis, axisName) {
-  if (
-    !axis ||
-    typeof axis.label !== "string" ||
-    !Array.isArray(axis.values) ||
-    axis.values.length === 0
-  ) {
-    fail(`${axisName}にはlabelと1件以上のvaluesが必要です。`);
-  }
+  assert.type.valid(axisName, axis);
+  assert.notEmpty.string(`${axisName}.label`, axis.label);
+  assert.anyMatch(`${axisName}.values`, axis.values, is.notEmpty.string, is.notEmpty.array);
+  // if (
+    // !axis ||
+    // typeof axis.label !== "string" ||
+  //   !Array.isArray(axis.values) ||
+  //   axis.values.length === 0
+  // ) {
+  //   throwErr.validate(`${axisName}にはlabelと1件以上のvaluesが必要です。`);
+  // }
   const values = axis.values.map((value, index) => {
     if (is.type.string(value)) return { label: value };
     assert.notEmpty.object(`${axisName}.values[${index}]`, value);
@@ -65,7 +69,7 @@ export function axisValues(axis, axisName) {
   });
   if (values.some((value) => value.label.length === 0))
     fail(`${axisName}.valuesに空のラベルがあります。`);
-  assert.format.uniqueArray(`${axisName}.values`, values, "label");
+  assert.array.uniqueBy(`${axisName}.values`, values, "label");
   return values;
 }
 
@@ -83,7 +87,7 @@ export function validate(data) {
 
   assert.type.array("items", data.items);
   if (is.notEmpty.number(data.width))
-    assertRange("width", data.width, 700, 4000, false);
+    assert.number.inRange("width", data.width, 700, 4000, false);
 
   const phaseSet = new Set(phases);
   const laneSet = new Set(lanes);

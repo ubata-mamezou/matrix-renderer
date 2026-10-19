@@ -39,9 +39,9 @@ function parseArguments(args) {
   if (args[0] === 'render') {
     commandArgs = args.slice(1);
   } else if (args[0] !== '--' && args[0].startsWith('-')) {
-    throwError.biz(`不明なオプションです: ${args[0]}\n${usage}`);
+    throwErr.biz({option: `不明なオプションです: ${args[0]}\n${usage}`});
   } else if (!args[0].endsWith('.yaml') && !args[0].endsWith('.yml')) {
-    throwError.biz(`不明なコマンドです: ${args[0]}\n${usage}`);
+    throwErr.biz({option: `不明なオプションです: ${args[0]}\n${usage}`});
   }
 
   const positional = [];
@@ -54,15 +54,15 @@ function parseArguments(args) {
     }
     if (commandArgs[index] === '--out') {
       output = commandArgs[index + 1];
-      if (!output) throwError.biz('--outの後に出力先を指定してください。');
+      if (!output) throwErr.biz({option: '--outの後に出力先を指定してください。'});
       index += 1;
     } else if (commandArgs[index].startsWith('-')) {
-      throwError.biz(`不明なオプションです: ${commandArgs[index]}\n${usage}`);
+      throwError.biz({option: `不明なオプションです: ${commandArgs[index]}\n${usage}`});
     } else {
       positional.push(commandArgs[index]);
     }
   }
-  if (positional.length !== 1) throwError.biz(`入力YAMLを1件指定してください。\n${usage}`);
+  if (positional.length !== 1) throwErr.biz({option: `入力YAMLを1件指定してください。\n${usage}`});
   const input = resolve(positional[0]);
   const prefix = resolve(output ?? `${dirname(input)}/${basename(input, extname(input))}`);
   return { input, prefix };
