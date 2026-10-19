@@ -1,76 +1,139 @@
-# Matrix Renderer
+<div align="center">
 
-YAMLで定義したフェーズと分類のマトリクスをSVGおよびPNGに出力する小さなCLIです。
+# 📊 matrix-renderer
 
-## 利用方法
+マトリクスのX軸、Y軸、プロット値をYAMLで定義し、SVGおよびPNG形式で出力するCLIです。
+
+[![npm version](https://shields.io)](https://npmjs.com)
+[![Node.js Version](https://shields.io)](https://nodejs.org)
+[![License: MIT](https://shields.io)](https://opensource.org)
+
+<p align="center">
+
+  ![sample](output/landscape.svg)
+
+</p>
+
+</div>
+
+---
+## 動作環境
+
+* Node.js 24+
+
+---
+## 🚀 利用手順
+
+1. マトリクス設定ファイルを作成する
+   マトリクスを作成するための設定値を定義したファイルを作成します。
+      * テンプレートは[こちら](#️-yaml設定テンプレート)
+      * サンプルは[こちら](#️-サンプル)
+2. イメージファイルを生成する
+   用途に合う[コマンド](#-コマンド)を使用してイメージファイルを生成します。
+
+## ⌘ コマンド
+
+イメージファイルを生成するコマンド例です。
+
+### 入力ファイルのみ指定
+
+ルートディレクトリに入力ファイルと同名のイメージファイルを生成します。
 
 ```sh
 npx matrix-renderer render -- example.yaml
-npx matrix-renderer render -- example.yaml --out output/development-guide
 ```
+* 📁
+  * example.yaml
+  * example.png
+  * example.svg
 
-Node.js 20.9.0以降が必要です。YAMLファイルは利用者側で用意します。`--out`は拡張子を含まない出力先で、省略すると入力ファイルと同じ場所、同じ名前でSVGとPNGを生成します。
+### 入力ファイル、出力ファイル名指定
 
-GitHub Packagesのプライベートパッケージを利用するため、初回は`read:packages`権限を持つPATを`NODE_AUTH_TOKEN`環境変数へ設定し、利用側の`.npmrc`に次を記述します。
-
-パッケージ開発時は、リポジトリ内で次のように実行できます。
+ルートディレクトリに指定されたファイル名のイメージファイルを生成します。
 
 ```sh
-npm install
-npm run render -- example.yaml
+npx matrix-renderer render -- example.yaml --out rename
 ```
+* 📁
+  * example.yaml
+  * rename.png
+  * rename.svg
 
-## サンプル
+### 入力ファイル、出力ディレクトリ+ファイル名指定
 
-[`examples/`](examples/)に用途の異なるサンプルを用意しています。出力先を分けて実行できます。
+指定されたディレクトリ配下に、指定されたファイル名のイメージファイルを生成します。
 
 ```sh
-npm run render -- examples/incident-response.yaml --out output/incident-response
-npm run render -- examples/seasonal-produce.yaml --out output/seasonal-produce
+npx matrix-renderer render -- example.yaml --out output/rename
 ```
+* 📁
+  * example.yaml
+  * 📁output
+    * rename.png
+    * rename.svg
 
-- [障害対応資料の適用範囲](examples/incident-response.yaml)
-- [旬の食材カレンダー](examples/seasonal-produce.yaml): 旬は地域や品種によって異なる目安です。
-- [花粉濃度の季節傾向](examples/pollen-seasons.yaml): 飛散傾向は地域や年によって異なる目安です。
-- [年間イベントの開催時期](examples/annual-events.yaml): 開催月単位で示し、個別の日付は表しません。
+### ヘルプ
 
-## テスト
+CLIのヘルプ表示。
 
 ```sh
-npm test
+npx matrix-renderer render -- --help
+
+Usage:
+  matrix-renderer render <input.yaml> [--out <output-prefix>]
+
+Options:
+  --out <prefix>  Output path without an extension (writes .svg and .png)
+  -h, --help      Show this help
 ```
 
-## YAML形式
+---
+
+## 🛠️ YAML設定テンプレート
 
 ```yaml
-title: 開発プロセスにおけるガイド・ツール
-width: 1440
-xAxis:
-  label: 開発フェーズ
-  values:
-    - label: 企画
-      color: "#d6eaf8"
-    - label: 要件定義
-      color: "#c5e4ec"
-yAxis:
-  label: 分類
-  values:
-    - label: プロセス
-      color: "#c5e4ec"
-    - label: アプリケーション
-      color: "#f6d4b8"
-items:
-  - id: aws-design
-    label: AWSインフラ設計書
-    lane: インフラ
-    from: 外部設計
-    to: テスト
-    url: https://contoso.sharepoint.com/sites/dev-guide/aws-design
-    color: "#b9dfc8"
+title: テンプレートです # * マトリクスタイトル
+width: 800 # マトリクスの幅
+xAxis: # * X軸
+  label: X軸の説明 # * x軸のラベル
+  values: # * X軸の設定
+    - label: 列１ # * X軸のラベル
+      color: "#d6eaf8" # 列の色（RGBまたはRRGGBB形式）
+    - 列２ # * X軸のラベル　※色指定しない場合
+    - label: 列３
+      color: "#f4e2ad"
+yAxis: # * Y軸
+  label: Y軸の説明 # * Y軸のラベル
+  values: # * Y軸の設定
+    - label: 行１ # * Y軸のラベル
+      color: "#c5e4ec" # 行の色（RGBまたはRRGGBB形式）
+    - 行２ # * Y軸のラベル　※色指定しない場合
+items: # * プロットするアイテムの設定
+  - id: item1 # * アイテムのID
+    label: アイテム１ # * アイテムのラベル
+    lane: 行１ # * アイテムを配置する行（Y軸のラベルを指定）
+    from: 列１ # * アイテムを配置する開始列（X軸のラベルを指定）
+    to: 列１ # * アイテムを配置する終了列（X軸のラベルを指定）
+    url: https://example.com/guide # アイテムのリンク
+    color: "#245080" # アイテムの色（RGBまたはRRGGBB形式）
 ```
+* X軸
+  * 描画順: xAxis.valuesに定義された順に描画します
+* Y軸
+  * 描画順: yAxis.valuesに定義された順に描画します
+* アイテム
+  * from, to: アイテムの描画範囲。fromはtoより左にあたるラベルまたは同値でなければいけません。
+  * URL: アイテムに埋め込みます。クリックすると新しいタブで開きます。（HTTPまたはHTTPS）※SVGのみ
 
-  `xAxis.values`と`yAxis.values`が軸の表示順です。値は従来どおり文字列だけでも指定できます。個別に色を付ける場合は`label`と`color`を持つオブジェクトを使い、文字列とオブジェクトは混在できます。軸色には各フェーズ見出しまたは分類ラベルの背景色が反映され、文字色は背景とのコントラストに応じて自動で選ばれます。`from`と`to`は両端を含むフェーズ名を指定します。各項目はひとつの`lane`に属し、同じレーン内で期間が重なる項目は自動で縦方向にずらします。項目のラベルは帯の幅に合わせて折り返します。項目の`color`も任意で、`#RGB`または`#RRGGBB`形式で帯の色を指定します。
+## 🛠️ サンプル
 
-各項目の`url`は任意です。指定するとSVGでは帯全体がクリック可能になり、新しいタブでHTTPまたはHTTPSのURLを開きます。実際に使う際は例のURLをSharePoint上のドキュメントURLに置き換えてください。PNGは画像形式のためリンクを保持しません。また、SVG内リンクの動作はSharePointでの表示方法やテナント設定に依存します。
+[`examples/`](examples/)に入力ファイル、  
+[`output/`](output/)に生成したイメージファイルを格納しています。
 
-PNGはSVGをラスタライズして生成します。SharePointに掲載する際は、テナントでSVGが許可されない場合にPNGをご利用ください。
+![landscape.svg](output/landscape.svg)
+
+---
+
+## 📄 ライセンス
+
+[MIT License](LICENSE) © 2026 ubata-mamezou
