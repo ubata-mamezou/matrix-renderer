@@ -57,7 +57,7 @@ function parseArguments(args) {
       if (!output) throwErr.biz({option: '--outの後に出力先を指定してください。'});
       index += 1;
     } else if (commandArgs[index].startsWith('-')) {
-      throwError.biz({option: `不明なオプションです: ${commandArgs[index]}\n${usage}`});
+      throwErr.biz({option: `不明なオプションです: ${commandArgs[index]}\n${usage}`});
     } else {
       positional.push(commandArgs[index]);
     }

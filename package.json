@@ -1,28 +1,45 @@
 {
   "name": "matrix-renderer",
   "version": "0.1.0",
-  "type": "module",
+"main": "src/cli.js",  "type": "module",
   "bin": {
     "matrix-renderer": "./src/cli.js"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "files": [
-    "src",
-    "examples"
+    "src"
   ],
   "engines": {
     "node": ">=24.0.0"
   },
   "scripts": {
     "build:dev": "npm run lint && npm run test && npm run render:examples",
-    "lint": "biome lint src test --fix",
+    "lint": "biome lint src test",
     "render": "node src/cli.js render",
     "render:examples": "bash render-examples.sh",
     "test": "node --test && bash test-behavior.sh"
   },
-  "dependencies": {
+"repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubata-mamezou/matrix-renderer.git"
+  },
+  "keywords": [
+    "matrix",
+    "matrix-renderer",
+    "2d-array",
+    "canvas",
+    "visualization",
+    "renderer"
+  ],
+  "author": "ubata-mamezou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ubata-mamezou/matrix-renderer/issues"
+  },
+  "homepage": "https://github.com/ubata-mamezou/matrix-renderer#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+    "dependencies": {
     "sharp": "^0.35.5",
     "yaml": "^2.8.1"
   },

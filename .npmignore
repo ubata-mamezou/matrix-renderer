@@ -1,0 +1,14 @@
+# .npmignore
+.github/
+.vscode/
+examples/
+node_modules/
+*.bak
+**/*.bak
+output/
+test/
+test-behavior/
+.gitignore
+biome.json
+render-examples.sh
+test-behavior.sh

@@ -20,15 +20,13 @@
         "includes": [
             "**/*.js"
         ],
-        "ignoreUnknown": false,
-        "ignore": []
+        "ignoreUnknown": false
     },
     "formatter": {
         "enabled": false,
         "indentStyle": "space",
         "indentWidth": 2,
-        "lineWidth": 120,
-        "ignore": []
+        "lineWidth": 120
     },
     "javascript": {
         "formatter": {
@@ -45,9 +43,6 @@
                 "noUndeclaredVariables": "error"
             }
         }
-    },
-    "organizeImports": {
-        "enabled": true
     },
     "vcs": {
         "enabled": false,
