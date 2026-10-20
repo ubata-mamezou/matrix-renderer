@@ -8,16 +8,30 @@
 
 **A tool that generates matrix image files (PNG/SVG) from YAML.**
 
+**Tired of updating matrix diagrams (feature matrices, roadmaps, dependency tables) in Excel or drawing tools? They easily get outdated and are impossible to track via Git diffs.**
+**matrix-renderer allows you to manage your matrix data in plain YAML and automatically renders structured images (PNG/SVG). Keep your documentation close to your code and fully automated.**
+
 YAMLからマトリクスイメージファイル（png/svg）を生成するCLIツールです。  
 
-**指定可能な値**
+マトリクス図（カバレッジ表、機能一覧、ロードマップなど）をExcelやDraw.ioで管理していませんか？それ、すぐに古くなり、Gitでの差分管理もできません。
+matrix-rendererは、プレーンなYAMLテキストをGitで管理するだけで、構造化されたマトリクス画像（PNG/SVG）を自動生成します。コードとドキュメントの乖離をなくし、ドキュメンテーションを自動化（Doc as Code）するための軽量ツールです。
+
+![sample](output/landscape.svg)
+
+*指定可能な値*
 * タイトル
 * イメージ幅
 * X軸のラベル、テキスト、色
 * Y軸のラベル、テキスト、色
 * プロットするアイテムのテキスト、配置行、X軸に対応した幅指定、色、URL
 
-![sample](output/landscape.svg)
+## ✨ Key Features / 主な特徴
+
+* Git-Friendly (Doc as Code): マトリクス構造をYAMLで記述するため、差分（diff）が明確で、レビューやバージョン管理が容易です。
+<!--
+* CI/CD Integration Ready: GitHub ActionsなどのCIワークフローに組み込むことで、YAMLの変更を検知してイメージファイルを自動で再帰的にアップデート可能です。
+-->
+* Interactive SVG: 生成されたSVG内のアイテムにはハイパーリンクを埋め込み可能。ドキュメントから詳細ページへの動線を作れます。
 
 ## Environment / 動作環境
 
