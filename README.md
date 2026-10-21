@@ -4,6 +4,8 @@
 
 </div>
 
+[![CI and Publish](https://github.com/ubata-mamezou/matrix-renderer/actions/workflows/publish.yaml/badge.svg)](https://github.com/ubata-mamezou/matrix-renderer/actions/workflows/publish.yaml)
+
 ## Overview / 概要
 
 **A tool that generates matrix image files (PNG/SVG) from YAML.**
@@ -112,7 +114,7 @@ xAxis: # * X軸
   values: # * X軸の設定
     - label: 列１ # * X軸のラベル
       color: "#d6eaf8" # 列の色（RGBまたはRRGGBB形式）
-    - 列２ # * X軸のラベル　※色指定しない場合
+    - label: 列２ # * X軸のラベル　※色指定しない場合
     - label: 列３
       color: "#f4e2ad"
 yAxis: # * Y軸
@@ -120,7 +122,7 @@ yAxis: # * Y軸
   values: # * Y軸の設定
     - label: 行１ # * Y軸のラベル
       color: "#c5e4ec" # 行の色（RGBまたはRRGGBB形式）
-    - 行２ # * Y軸のラベル　※色指定しない場合
+    - label: 行２ # * Y軸のラベル　※色指定しない場合
 items: # * プロットするアイテムの設定
   - id: item1 # * アイテムのID
     label: アイテム１ # * アイテムのラベル

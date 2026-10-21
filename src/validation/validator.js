@@ -1,7 +1,7 @@
 import { throwErr } from "../errors/error.js";
 
 /**
- * 値を判定する述語関数。
+ * 値を判定する関数型。
  * @callback TypeCheck
  * @param {*} value 判定対象
  * @returns {boolean} 判定結果
@@ -42,16 +42,22 @@ export const is = {
       value !== null && typeof value === "object" && !Array.isArray(value),
     array: (value) => typeof value === "object" && Array.isArray(value),
     function: (value) => typeof value === "function",
-    /**
-     * 値が指定された型のいずれかであることを検証する。
-     * @param {any} value
-     * @param {...TypeCheck} checks
-     */
-    lotsType: (value, ...checks) => checks.some((check) => check(value)),
   },
   number: {
     inRange: (value, min, max) =>
       is.type.number(value) && min <= value && value <= max,
+  },
+  array: {
+    /**
+     * 配列のindexの前後をチェックする。
+     *
+     * fromがtoより後の値だった場合、エラーとみなす
+     * @param {Array} list チェック対象リスト
+     * @param {*} from 開始値
+     * @param {*} to 終了値
+     * @returns {boolean} チェック結果（true: チェックOK）
+     */
+    order: (list, from, to) => list.indexOf(from) <= list.indexOf(to),
   },
   /**
    * Emptyチェック
@@ -84,7 +90,7 @@ export const is = {
    */
   format: {
     /**
-     * RGBカラーコードの形式か検証する。
+     * RGBカラーコードの形式かチェックする。
      * @param {string} value チェック対象値
      * @returns {boolean} チェック結果（true: チェックOK）
      */
@@ -95,6 +101,15 @@ export const is = {
 };
 
 export const assert = {
+  /**
+   * 任意の関数で値を検証する。
+   * @param {*} value 検証対象
+   * @param {TypeCheck} check 検証関数
+   * @param {string} message 検証失敗時のメッセージ
+   */
+  general: (value, check, message) => {
+    if (!check(value)) throwErr.validate("validation.general", { message });
+  },
   /**
    * 値が指定されたチェックのいずれかに該当するかチェックする
    * @param {string} label チェック対象項目名
@@ -107,14 +122,23 @@ export const assert = {
       throwErr.validate("validation.anyMatch", { label, value });
   },
   type: {
+    /**
+     * @param {string} label @param {*} value
+     */
     valid: (label, value) => {
       if (is.type.invalid(value))
         throwErr.validate("validation.type.valid", { label, value });
     },
+    /**
+     * @param {string} label @param {*} value
+     */
     string: (label, value) => {
       if (!is.type.string(value))
         throwErr.validate("validation.type.string", { label, value });
     },
+    /**
+     * @param {string} label @param {*} value
+     */
     object: (label, value) => {
       if (!is.type.object(value))
         throwErr.validate("validation.type.object", {
@@ -122,6 +146,9 @@ export const assert = {
           value: JSON.stringify(value),
         });
     },
+    /**
+     * @param {string} label @param {*} value
+     */
     array: (label, value) => {
       if (!is.type.array(value))
         throwErr.validate("validation.type.array", {
@@ -130,30 +157,14 @@ export const assert = {
         });
     },
   },
-  /**
-   * 値がEmptyか検証する。チェック内容は {@link is.empty} 参照。
-   * @param {string} label チェック対象項目名
-   * @param {*} value
-   * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
-   */
-  empty: {
-    string: (label, value) => {
-      if (!is.empty.string(value))
-        throwErr.validate("validation.empty", { label });
-    },
-    array: (label, value) => {
-      if (!is.empty.array(value))
-        throwErr.validate("validation.empty", { label });
-    },
-  },
   number: {
     /**
-     * 値が指定された範囲内であることを検証する。
+     * 値が指定された範囲内であることをチェックする。
      *
-     * @param {string} label
-     * @param {integer} value
-     * @param {integer} min
-     * @param {integer} max
+     * @param {string} label 項目名
+     * @param {integer} value チェック対象値
+     * @param {integer} min 最小値
+     * @param {integer} max 最大値
      */
     inRange: (label, value, min, max) => {
       if (!is.number.inRange(value, min, max))
@@ -162,10 +173,10 @@ export const assert = {
   },
   array: {
     /**
-     * 指定されたキー項目が配列の要素が一意であることを検証する。
+     * 指定されたキー項目が配列の要素が一意であることをチェックする。
      *
      * @param {string} label 項目名
-     * @param {Array} value 検証対象値
+     * @param {Array} value チェック対象値
      * @param {string} key キー項目名
      * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
      */
@@ -173,36 +184,83 @@ export const assert = {
       if (new Set(value.map((value) => value[key])).size !== value.length)
         throwErr.validate("validation.array.uniqueBy", { label, value: key });
     },
+    /**
+     * 配列のindexの前後をチェックする。
+     *
+     * fromがtoより後の値だった場合、エラーとみなす
+     * @param {Array} list チェック対象リスト
+     * @param {*} from 開始値
+     * @param {*} to 終了値
+     * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
+     */
+    order: (list, from, to) => {
+      if (!is.array.order(list, from, to))
+        throwErr.validate("validation.order", { from, to });
+    },
+  },
+  set: {
+    /**
+     * Setに存在しているかチェックする。
+     * @param {string} label チェック対象項目名
+     * @param {Set} set チェック対象リスト
+     * @param {*} value チェック対象値
+     * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
+     */
+    exists: (label, set, value) => {
+      if (!set.has(value))
+        throwErr.validate("validation.notInList", { label, value });
+    },
   },
   /**
-   * 値がEmptyでないか検証する。チェック内容は {@link is.empty} 参照。
+   * 値がEmptyかチェックする。チェック内容は {@link is.empty} 参照。
+   * @param {string} label チェック対象項目名
+   * @param {*} value チェック対象値
+   * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
+   */
+  empty: {
+    string: (label, value) => {
+      if (!is.empty.string(value))
+        throwErr.validate("validation.empty", { label, value });
+    },
+    array: (label, value) => {
+      if (!is.empty.array(value))
+        throwErr.validate("validation.empty", {
+          label,
+          value: JSON.stringify(value),
+        });
+    },
+  },
+  /**
+   * 値がEmptyでないかチェックする。チェック内容は {@link is.empty} 参照。
    * @param {string} label チェック対象項目名
    * @param {*} value  チェック対象値
    * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
    */
   notEmpty: {
-    invalid: (label, value) => {
-      if (!is.notEmpty.invalid(value))
-        throwErr.validate("validation.notEmpty", { label });
-    },
     string: (label, value) => {
       if (!is.notEmpty.string(value))
-        throwErr.validate("validation.notEmpty", { label });
+        throwErr.validate("validation.notEmpty", { label, value });
     },
     object: (label, value) => {
       if (!is.notEmpty.object(value))
-        throwErr.validate("validation.notEmpty", { label });
+        throwErr.validate("validation.notEmpty", {
+          label,
+          value: JSON.stringify(value),
+        });
     },
     array: (label, value) => {
       if (!is.notEmpty.array(value))
-        throwErr.validate("validation.notEmpty", { label });
+        throwErr.validate("validation.notEmpty", {
+          label,
+          value: JSON.stringify(value),
+        });
     },
   },
   format: {
     /**
-     * RGBカラーコードの形式を検証する。
+     * RGBカラーコードの形式をチェックする。
      * @param {string} label 項目名
-     * @param {string} value 検証対象値
+     * @param {string} value チェック対象値
      * @throws {ValidationError} チェック結果がNGの場合、エラーをスロー
      */
     rgb: (label, value) => {
@@ -213,7 +271,7 @@ export const assert = {
 };
 
 // /**
-//  * オブジェクトが指定された属性を持っているかを検証する。
+//  * オブジェクトが指定された属性を持っているかをチェックする。
 //  *
 //  * @param {string} objectName
 //  * @param {object} value

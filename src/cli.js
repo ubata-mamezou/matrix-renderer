@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import { writeFile, mkdir } from 'node:fs/promises';
-import { dirname, basename, extname, resolve } from 'node:path';
-import process from 'node:process';
-import { loadInput } from './input.js';
-import { renderSvg } from './svg.js';
-import { renderPng } from './png.js';
-import { throwErr } from './errors/error.js';
+import { writeFile, mkdir } from "node:fs/promises";
+import { dirname, basename, extname, resolve } from "node:path";
+import process from "node:process";
+import { loadInput } from "./input.js";
+import { renderSvg } from "./svg.js";
+import { renderPng } from "./png.js";
+import { throwErr } from "./errors/error.js";
 
 /**
  * @typedef {Object} CliOptions
@@ -15,56 +15,62 @@ import { throwErr } from './errors/error.js';
 
 /**
  * CLI引数を解析する。ヘルプ表示時はnullを返す。
- * 
+ *
  * @param {string[]} args
  * @returns {CliOptions | null}
  */
 function parseArguments(args) {
   const usage = [
-    'Usage:',
-    '  matrix-renderer render <input.yaml> [--out <output-prefix>]',
-    '',
-    'Options:',
-    '  --out <prefix>  Output path without an extension (writes .svg and .png)',
-    '  -h, --help      Show this help',
-  ].join('\n');
+    "Usage:",
+    "  matrix-renderer render <input.yaml> [--out <output-prefix>]",
+    "",
+    "Options:",
+    "  --out <prefix>  Output path without an extension (writes .svg and .png)",
+    "  -h, --help      Show this help",
+  ].join("\n");
 
   // ヘルプ表示
-  if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
+  if (args.length === 0 || args[0] === "--help" || args[0] === "-h") {
     process.stdout.write(`${usage}\n`);
     return null;
   }
 
   let commandArgs = args;
-  if (args[0] === 'render') {
+  if (args[0] === "render") {
     commandArgs = args.slice(1);
-  } else if (args[0] !== '--' && args[0].startsWith('-')) {
-    throwErr.biz({option: `不明なオプションです: ${args[0]}\n${usage}`});
-  } else if (!args[0].endsWith('.yaml') && !args[0].endsWith('.yml')) {
-    throwErr.biz({option: `不明なオプションです: ${args[0]}\n${usage}`});
+  } else if (args[0] !== "--" && args[0].startsWith("-")) {
+    throwErr.biz({ option: `不明なオプションです: ${args[0]}\n${usage}` });
+  } else if (!args[0].endsWith(".yaml") && !args[0].endsWith(".yml")) {
+    throwErr.biz({ option: `不明なオプションです: ${args[0]}\n${usage}` });
   }
 
   const positional = [];
   let output;
   for (let index = 0; index < commandArgs.length; index += 1) {
-    if (commandArgs[index] === '--') continue;
-    if (commandArgs[index] === '--help' || commandArgs[index] === '-h') {
+    if (commandArgs[index] === "--") continue;
+    if (commandArgs[index] === "--help" || commandArgs[index] === "-h") {
       process.stdout.write(`${usage}\n`);
       return null;
     }
-    if (commandArgs[index] === '--out') {
+    if (commandArgs[index] === "--out") {
       output = commandArgs[index + 1];
-      if (!output) throwErr.biz({option: '--outの後に出力先を指定してください。'});
+      if (!output)
+        throwErr.biz({ option: "--outの後に出力先を指定してください。" });
       index += 1;
-    } else if (commandArgs[index].startsWith('-')) {
-      throwErr.biz({option: `不明なオプションです: ${commandArgs[index]}\n${usage}`});
+    } else if (commandArgs[index].startsWith("-")) {
+      throwErr.biz({
+        option: `不明なオプションです: ${commandArgs[index]}\n${usage}`,
+      });
     } else {
       positional.push(commandArgs[index]);
     }
   }
-  if (positional.length !== 1) throwErr.biz({option: `入力YAMLを1件指定してください。\n${usage}`});
+  if (positional.length !== 1)
+    throwErr.biz({ option: `入力YAMLを1件指定してください。\n${usage}` });
   const input = resolve(positional[0]);
-  const prefix = resolve(output ?? `${dirname(input)}/${basename(input, extname(input))}`);
+  const prefix = resolve(
+    output ?? `${dirname(input)}/${basename(input, extname(input))}`,
+  );
   return { input, prefix };
 }
 
@@ -74,20 +80,27 @@ try {
     const { input, prefix } = options;
     await mkdir(dirname(prefix), { recursive: true });
     const data = await loadInput(input);
+    process.stderr.write("[1/4] Input data loaded\n");
 
     const svgPath = `${prefix}.svg`;
     const { svg, width, height } = renderSvg(data);
+    process.stderr.write("[2/4] SVG rendered\n");
 
     const pngPath = `${prefix}.png`;
     const png = await renderPng(svg);
+    process.stderr.write("[3/4] PNG rendered\n");
 
     await Promise.all([
-      writeFile(svgPath, svg, 'utf8'),
+      writeFile(svgPath, svg, "utf8"),
       writeFile(pngPath, png),
     ]);
-    process.stdout.write(`Generated ${svgPath} and ${pngPath} (${width}x${height})\n`);
+    process.stderr.write("[4/4] Output files written\n");
+
+    process.stdout.write(
+      `Generated ${svgPath} and ${pngPath} (${width}x${height})\n`,
+    );
   }
 } catch (error) {
-  process.stderr.write(`Error: ${error.message}\n`);
+  process.stderr.write(`${error.stack ?? error}\n`);
   process.exitCode = 1;
 }

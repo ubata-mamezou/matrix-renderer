@@ -1,4 +1,4 @@
-import { axisValues } from './input.js';
+import { axisDefinition } from './input.js';
 
 /** @typedef {import('./input.js').MatrixData} MatrixData */
 /** @typedef {import('./input.js').MatrixItem} MatrixItem */
@@ -137,17 +137,19 @@ function text(x, y, value, attributes = '') {
  * @returns {{ svg: string, width: number, height: number }}
  */
 export function renderSvg(data) {
-  const phases = axisValues(data.xAxis, 'xAxis');
-  const lanes = axisValues(data.yAxis, 'yAxis');
+  const xAxes = axisDefinition("xAxis", data.xAxis);
+
+  const yAxes = axisDefinition("yAxis",data.yAxis );
+  const yAxisLabelsMap = new Map(yAxes.values.map(({ label }) => [label, []]));
+
   const width = data.width ?? 1440;
   const plotWidth = width - MARGIN.left - MARGIN.right;
-  const columnWidth = plotWidth / phases.length;
-  const laneItems = new Map(lanes.map(({ label }) => [label, []]));
+  const columnWidth = plotWidth / xAxes.values.length;
 
   for (const source of data.items) {
-    const start = phases.findIndex((phase) => phase.label === source.from);
-    const end = phases.findIndex((phase) => phase.label === source.to) + 1;
-    laneItems.get(source.lane).push({
+    const start = xAxes.values.findIndex((phase) => phase.label === source.from);
+    const end = xAxes.values.findIndex((phase) => phase.label === source.to) + 1;
+    yAxisLabelsMap.get(source.lane).push({
       source,
       start,
       end,
@@ -156,9 +158,9 @@ export function renderSvg(data) {
     });
   }
 
-  const laneLayouts = lanes.map(({ label, color }) => {
+  const laneLayouts = yAxes.values.map(({ label, color }) => {
     const lane = label;
-    const tracks = assignTracks(laneItems.get(lane));
+    const tracks = assignTracks(yAxisLabelsMap.get(lane));
     const contentHeight = tracks.reduce((sum, track) => sum + track.height, 0)
       + Math.max(0, tracks.length - 1) * TRACK_GAP;
     return { lane, color, tracks, height: Math.max(58, contentHeight + LANE_PADDING * 2) };
@@ -177,11 +179,11 @@ export function renderSvg(data) {
   parts.push(text(MARGIN.left, 78, data.xAxis.label, 'class="axis" font-weight="700"'));
   parts.push(text(24, plotTop - 14, data.yAxis.label, 'class="axis" font-weight="700"'));
 
-  for (let index = 0; index < phases.length; index += 1) {
+  for (let index = 0; index < xAxes.values.length; index += 1) {
     const x = MARGIN.left + index * columnWidth;
-    const palette = itemColors(phases[index].color, COLORS.laneAlt, COLORS.grid);
+    const palette = itemColors(xAxes.values[index].color, COLORS.laneAlt, COLORS.grid);
     parts.push(`<rect x="${x}" y="${plotTop - 32}" width="${columnWidth}" height="32" fill="${palette.fill}"/>`);
-    parts.push(text(x + columnWidth / 2, plotTop - 11, phases[index].label, `class="axis" text-anchor="middle" style="fill:${palette.text}"`));
+    parts.push(text(x + columnWidth / 2, plotTop - 11, xAxes.values[index].label, `class="axis" text-anchor="middle" style="fill:${palette.text}"`));
   }
 
   let laneY = plotTop;
@@ -196,7 +198,7 @@ export function renderSvg(data) {
     laneY += layout.height;
   });
 
-  for (let index = 0; index <= phases.length; index += 1) {
+  for (let index = 0; index <= xAxes.values.length; index += 1) {
     const x = MARGIN.left + index * columnWidth;
     parts.push(`<line x1="${x}" y1="${plotTop}" x2="${x}" y2="${plotTop + plotHeight}" stroke="${COLORS.grid}"/>`);
   }

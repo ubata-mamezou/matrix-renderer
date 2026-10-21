@@ -5,15 +5,17 @@ xAxis:
   values: # x軸の設定
     - label: Plan # 列ラベル
       color: "#d6eaf8" # 列の色
-    - Build # 列ラベル（色指定なし）
+    - Doing # 列ラベル（色指定なし）
     - label: Review
       color: "#f4e2ad"
+    - label: Done # 列ラベル（色指定なし、属性名あり）
 yAxis: # y軸の設定
   label: Category # y軸のラベル
   values:
     - label: Operations # 行のラベル
       color: "#c5e4ec" # 行の色
     - Data # 行のラベル（色指定なし）
+    - label: Business # 行のラベル（色指定なし、属性名あり）
 items: # プロットするアイテムの設定
   - id: linked-guide # アイテムのID
     label: Linked operational guide with a long label # アイテムのラベル
@@ -31,5 +33,5 @@ items: # プロットするアイテムの設定
   - id: data-tool
     label: Data tool
     lane: Data
-    from: Build
+    from: Doing
     to: Review

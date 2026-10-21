@@ -23,7 +23,7 @@ test('renders all supported settings to the SVG baseline', async () => {
 
   assert.equal(result.svg, baseline);
   assert.equal(result.width, 800);
-  assert.equal(result.height, 361);
+  assert.equal(result.height, 419);
 });
 
 test('renders a PNG with the SVG dimensions', async () => {
@@ -39,8 +39,8 @@ test('renders a PNG with the SVG dimensions', async () => {
 test('validation rejects invalid item and width values', async (context) => {
   const cases = [
     ['duplicate item id', (data) => { data.items[1].id = data.items[0].id; }, 'array.uniqueBy'],
-    ['unknown lane', (data) => { data.items[0].lane = 'Unknown'; }, /yAxis.valuesにありません/],
-    ['reversed interval', (data) => { data.items[0].from = 'Review'; data.items[0].to = 'Plan'; }, /fromはtoより前/],
+    ['unknown lane', (data) => { data.items[0].lane = 'Unknown'; }, 'validation.notInList'],
+    ['reversed interval', (data) => { data.items[0].from = 'Review'; data.items[0].to = 'Plan'; }, 'validation.order'],
     ['non-http URL', (data) => { data.items[0].url = 'ftp://example.com'; }, 'url.badProtocol'],
     ['invalid item color', (data) => { data.items[0].color = 'red'; }, 'validation.format.rgb'],
     ['width outside the supported range', (data) => { data.width = 699; }, 'validation.number.inRange'],
@@ -71,7 +71,7 @@ test('CLI writes the SVG and PNG to the requested output prefix', async () => {
       encoding: 'utf8',
     });
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /Generated .*matrix\.svg and .*matrix\.png \(800x361\)/);
+    assert.match(result.stdout, /Generated .*matrix\.svg and .*matrix\.png \(800x419\)/);
 
     const [svg, png] = await Promise.all([
       readFile(`${outputPrefix}.svg`, 'utf8'),
@@ -83,7 +83,7 @@ test('CLI writes the SVG and PNG to the requested output prefix', async () => {
     assert.equal(svg, baseline);
     assert.equal(metadata.format, 'png');
     assert.equal(metadata.width, 800);
-    assert.equal(metadata.height, 361);
+    assert.equal(metadata.height, 419);
   } finally {
     await rm(temporaryDirectory, { recursive: true, force: true });
   }

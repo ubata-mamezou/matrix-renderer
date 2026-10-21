@@ -1,11 +1,13 @@
 // 循環参照を避けるため、ここではerror.jsは参照しない
 const messages = {
+  general: '{message}',
   fail: {
     application: "application error: {option}",
     unSupportOps: "un supported operation: {option}",
   },
   biz: "business error: {option}",
   validation: {
+    general: '{message}',
     default: "validation error: {option}",
     anyMatch: "{label} does not meet the specified check: {value}",
     type: {
@@ -14,18 +16,21 @@ const messages = {
       object: "{label} is not object: {value}",
       array: "{label} is not array: {value}",
     },
-    array: {
-      uniqueBy: `Duplicate keys in the {label}: {value}`,
-    },
     number: {
       inRange: `{label} between {min} and {max}`,
     },
-    empty: "{label} is not empty",
-    notEmpty: "{label} is empty",
+    array: {
+      uniqueBy: `Duplicate keys in the {label}: {value}`,
+    },
+    empty: "{label} is not empty: {value}",
+    notEmpty: "{label} is empty: {value}",
     format: {
       rgb: `{label} is not #RGB or #RRGGBB style: {value}`,
     },
     hasAttribute: "{label} attribute does not exist",
+    duplicate: '{label} is duplicated: {value}',
+    notInList: '{label} is not in list: {value}',
+    order: 'Please specify a value for "from" that precedes the value for "to": {from}, {to}',
   },
   url: {
     badValue: "The value to be converted is not a URL.",
