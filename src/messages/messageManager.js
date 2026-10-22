@@ -1,13 +1,13 @@
 // 循環参照を避けるため、ここではerror.jsは参照しない
 const messages = {
-  general: '{message}',
+  general: "{message}",
   fail: {
     application: "application error: {option}",
     unSupportOps: "un supported operation: {option}",
   },
   biz: "business error: {option}",
   validation: {
-    general: '{message}',
+    general: "{message}",
     default: "validation error: {option}",
     anyMatch: "{label} does not meet the specified check: {value}",
     type: {
@@ -28,9 +28,10 @@ const messages = {
       rgb: `{label} is not #RGB or #RRGGBB style: {value}`,
     },
     hasAttribute: "{label} attribute does not exist",
-    duplicate: '{label} is duplicated: {value}',
-    notInList: '{label} is not in list: {value}',
-    order: 'Please specify a value for "from" that precedes the value for "to": {from}, {to}',
+    duplicate: "{label} is duplicated: {value}",
+    notInList: "{label} is not in list: {value}",
+    order:
+      'Please specify a value for "from" that precedes the value for "to": {from}, {to}',
   },
   url: {
     badValue: "The value to be converted is not a URL.",
@@ -47,14 +48,16 @@ export function getMessageTemplate(messageId) {
       typeof current !== "object" ||
       !Object.hasOwn(current, key)
     ) {
-        throw new Error(`Message ID does not exist.: ${messageId}`);
+      throw new Error(`Message ID does not exist.: ${messageId}`);
     }
 
     current = current[key];
   }
 
   if (typeof current !== "string") {
-    throw new Error(`Message ID that is not associated with any template has been specified.: ${messageId}`);
+    throw new Error(
+      `Message ID that is not associated with any template has been specified.: ${messageId}`,
+    );
   }
 
   return current;

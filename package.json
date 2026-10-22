@@ -1,6 +1,6 @@
 {
   "name": "matrix-renderer",
-  "version": "0.1.0",
+  "version": "0.1.1",
 "main": "src/cli.js",  "type": "module",
   "bin": {
     "matrix-renderer": "./src/cli.js"

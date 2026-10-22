@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import { writeFile, mkdir } from "node:fs/promises";
-import { dirname, basename, extname, resolve } from "node:path";
+import { mkdir, writeFile } from "node:fs/promises";
+import { basename, dirname, extname, resolve } from "node:path";
 import process from "node:process";
-import { loadInput } from "./input.js";
-import { renderSvg } from "./svg.js";
-import { renderPng } from "./png.js";
 import { throwErr } from "./errors/error.js";
+import { loadInput } from "./input.js";
+import { renderPng } from "./png.js";
+import { renderSvg } from "./svg.js";
 
 /**
  * @typedef {Object} CliOptions

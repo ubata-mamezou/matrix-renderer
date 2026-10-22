@@ -1,4 +1,7 @@
-import { formatMessage, getMessageTemplate } from "../messages/messageManager.js";
+import {
+  formatMessage,
+  getMessageTemplate,
+} from "../messages/messageManager.js";
 
 class BaseError extends Error {
   constructor(messageId = new.target.messageId, params = {}) {
@@ -11,16 +14,16 @@ class BaseError extends Error {
 }
 
 export class ApplicationError extends BaseError {
-  static messageId = 'fail.application';
+  static messageId = "fail.application";
   static statusCode = 500;
 }
 
 export class UnSupportedOperationError extends ApplicationError {
-  static messageId = 'fail.unSupportOps';
+  static messageId = "fail.unSupportOps";
 }
 
 export class BusinessError extends BaseError {
-  static messageId = 'biz';
+  static messageId = "biz";
   static statusCode = 400;
 }
 
@@ -28,7 +31,7 @@ export class BusinessError extends BaseError {
  * Validation error.
  */
 export class ValidationError extends BusinessError {
-  static messageId = 'validation.default';
+  static messageId = "validation.default";
   constructor(messageId = ValidationError.messageId, params = {}) {
     super(messageId, params);
     this.name = "ValidationError";
@@ -45,7 +48,8 @@ export const throwErr = {
   /** @param {string} message */
   biz: (params = {}) => raise(new BusinessError(params)),
   /** @param {string} message */
-  validate: (messageId, params) => raise(new ValidationError(messageId, params)),
+  validate: (messageId, params) =>
+    raise(new ValidationError(messageId, params)),
 };
 
 const raise = (err) => {

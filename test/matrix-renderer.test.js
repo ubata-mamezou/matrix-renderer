@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { loadInput, validate } from '../src/input.js';
+import { loadInput, MatrixDefinition } from '../src/input.js';
 import { renderPng } from '../src/png.js';
 import { renderSvg } from '../src/svg.js';
 
@@ -51,12 +51,12 @@ test('validation rejects invalid item and width values', async (context) => {
       const data = structuredClone(await loadInput(fixturePath));
       mutate(data);
       if (expectedError && typeof expectedError === 'object' && 'messageId' in expectedError) {
-        assert.throws(() => validate(data), (error) => {
+        assert.throws(() => MatrixDefinition.from(data), (error) => {
           assert.equal(error.messageId, { messageId: expectedError.messageId });
           return true;
         });
       } else {
-        assert.throws(() => validate(data), expectedError);
+        assert.throws(() => MatrixDefinition.from(data), expectedError);
       }
     });
   }
