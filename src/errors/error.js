@@ -23,7 +23,7 @@ export class UnSupportedOperationError extends ApplicationError {
 }
 
 export class BusinessError extends BaseError {
-  static messageId = "biz";
+  static messageId = "biz.default";
   static statusCode = 400;
 }
 
@@ -42,12 +42,14 @@ export class ValidationError extends BusinessError {
  * throw error.
  */
 export const throwErr = {
-  /** @param {string} message */
-  app: (params = {}) => raise(new ApplicationError(params)),
-  unSupportOps: (params = {}) => raise(new UnSupportedOperationError(params)),
-  /** @param {string} message */
-  biz: (params = {}) => raise(new BusinessError(params)),
-  /** @param {string} message */
+  /** @param {string} messageId @param {object} params */
+  app: (messageId, params = {}) => raise(new ApplicationError(messageId, params)),
+  /** @param {string} messageId @param {object} params */
+  unSupportOps: (params = {}) =>
+    raise(new UnSupportedOperationError(undefined, params)),
+  /** @param {string} messageId @param {object} params */
+  biz: (messageId, params = {}) => raise(new BusinessError(messageId, params)),
+  /** @param {string} messageId @param {object} params */
   validate: (messageId, params) =>
     raise(new ValidationError(messageId, params)),
 };

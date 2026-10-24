@@ -5,7 +5,14 @@ const messages = {
     application: "application error: {option}",
     unSupportOps: "un supported operation: {option}",
   },
-  biz: "business error: {option}",
+  biz: {
+    default: "business error: {option}",
+    unknownOption: "不明なオプションです: {arg}\n{usage}",
+    warnInputOption: "入力YAMLを1件指定してください。\n{usage}",
+    warnOutOption: "--outの後に出力先を指定してください。",
+    warnOutTypeOption: "--out-typeの後にファイルタイプを指定してください。",
+    warnOutTypeOptionValues: "--out-typeはsvgまたはpngを指定してください。",
+  },
   validation: {
     general: "{message}",
     default: "validation error: {option}",
@@ -40,9 +47,14 @@ const messages = {
 };
 
 export function getMessageTemplate(messageId) {
-  let current = messages;
+  if (typeof messageId !== "string" || messageId.length === 0) {
+    throw new Error("Message ID must be a non-empty string.");
+  }
 
-  for (const key of messageId.split(".")) {
+  let current = messages;
+  const keys = messageId.includes(".") ? messageId.split(".") : [messageId];
+
+  for (const key of keys) {
     if (
       current === null ||
       typeof current !== "object" ||
