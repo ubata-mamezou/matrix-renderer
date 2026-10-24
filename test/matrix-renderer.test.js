@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { parse } from 'yaml';
 import { loadInput, MatrixDefinition } from '../src/input.js';
 import { renderPng } from '../src/png.js';
 import { renderSvg } from '../src/svg.js';
@@ -38,7 +39,7 @@ test('renders a PNG with the SVG dimensions', async () => {
 
 test('validation rejects invalid item and width values', async (context) => {
   const cases = [
-    ['duplicate item id', (data) => { data.items[1].id = data.items[0].id; }, 'array.uniqueBy'],
+    ['duplicate item id', (data) => { data.items[1].id = data.items[0].id; }, 'validation.duplicate'],
     ['unknown lane', (data) => { data.items[0].lane = 'Unknown'; }, 'validation.notInList'],
     ['reversed interval', (data) => { data.items[0].from = 'Review'; data.items[0].to = 'Plan'; }, 'validation.order'],
     ['non-http URL', (data) => { data.items[0].url = 'ftp://example.com'; }, 'url.badProtocol'],
@@ -48,16 +49,12 @@ test('validation rejects invalid item and width values', async (context) => {
 
   for (const [name, mutate, expectedError] of cases) {
     await context.test(name, async () => {
-      const data = structuredClone(await loadInput(fixturePath));
+      const data = parse(await readFile(fixturePath, 'utf8'));
       mutate(data);
-      if (expectedError && typeof expectedError === 'object' && 'messageId' in expectedError) {
-        assert.throws(() => MatrixDefinition.from(data), (error) => {
-          assert.equal(error.messageId, { messageId: expectedError.messageId });
-          return true;
-        });
-      } else {
-        assert.throws(() => MatrixDefinition.from(data), expectedError);
-      }
+      assert.throws(() => MatrixDefinition.from(data), (error) => {
+        assert.equal(error.messageId, expectedError);
+        return true;
+      });
     });
   }
 });
@@ -71,7 +68,8 @@ test('CLI writes the SVG and PNG to the requested output prefix', async () => {
       encoding: 'utf8',
     });
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /Generated .*matrix\.svg and .*matrix\.png \(800x419\)/);
+    assert.match(result.stdout, /Generated .*matrix\.svg \(800x419\)/);
+    assert.match(result.stdout, /Generated .*matrix\.png \(800x419\)/);
 
     const [svg, png] = await Promise.all([
       readFile(`${outputPrefix}.svg`, 'utf8'),
@@ -86,6 +84,58 @@ test('CLI writes the SVG and PNG to the requested output prefix', async () => {
     assert.equal(metadata.height, 419);
   } finally {
     await rm(temporaryDirectory, { recursive: true, force: true });
+  }
+});
+
+test('CLI --out-type writes only the selected format', async (context) => {
+  for (const outputType of ['svg', 'png']) {
+    await context.test(outputType, async () => {
+      const temporaryDirectory = await mkdtemp(join(tmpdir(), 'matrix-renderer-'));
+      const outputPrefix = join(temporaryDirectory, 'selected-format');
+      const selectedPath = `${outputPrefix}.${outputType}`;
+      const otherType = outputType === 'svg' ? 'png' : 'svg';
+
+      try {
+        const result = spawnSync(process.execPath, [
+          cliPath,
+          'render',
+          fixturePath,
+          '--out',
+          outputPrefix,
+          '--out-type',
+          outputType,
+        ], { encoding: 'utf8' });
+
+        assert.equal(result.status, 0, result.stderr);
+        await readFile(selectedPath);
+        await assert.rejects(readFile(`${outputPrefix}.${otherType}`), { code: 'ENOENT' });
+        assert.match(result.stdout, new RegExp(`Generated .*\\.${outputType} \\(800x419\\)`));
+      } finally {
+        await rm(temporaryDirectory, { recursive: true, force: true });
+      }
+    });
+  }
+});
+
+test('CLI rejects missing or unsupported --out-type values', async (context) => {
+  const cases = [
+    ['missing output type', [], 'biz.warnOutTypeOption'],
+    ['unsupported output type', ['jpeg'], 'biz.warnOutTypeOptionValues'],
+  ];
+
+  for (const [name, outputTypeArgs, expectedError] of cases) {
+    await context.test(name, async () => {
+      const result = spawnSync(process.execPath, [
+        cliPath,
+        'render',
+        fixturePath,
+        '--out-type',
+        ...outputTypeArgs,
+      ], { encoding: 'utf8' });
+
+      assert.equal(result.status, 1);
+      assert.match(result.stderr, new RegExp(`\\[${expectedError}\\]`));
+    });
   }
 });
 
@@ -108,7 +158,7 @@ test('CLI reports invalid YAML input and does not write artifacts', async () => 
     });
 
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /Error: xAxis.label is empty/);
+    assert.match(result.stderr, /\[validation.notEmpty\]/);
     await assert.rejects(readFile(`${outputPrefix}.svg`), { code: 'ENOENT' });
     await assert.rejects(readFile(`${outputPrefix}.png`), { code: 'ENOENT' });
   } finally {

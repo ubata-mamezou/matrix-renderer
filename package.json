@@ -1,6 +1,6 @@
 {
   "name": "matrix-renderer",
-  "version": "0.1.1",
+  "version": "0.1.2",
 "main": "src/cli.js",  "type": "module",
   "bin": {
     "matrix-renderer": "./src/cli.js"
@@ -12,7 +12,7 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "build:dev": "npm run lint && npm run test && npm run render:examples",
+    "build:dev": "npm run lint && npm audit fix && npm run test && npm run render:examples",
     "lint": "biome lint src test",
     "render": "node src/cli.js render",
     "render:examples": "bash render-examples.sh",

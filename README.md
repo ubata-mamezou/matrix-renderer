@@ -89,6 +89,20 @@ npx matrix-renderer render -- example.yaml --out output/rename
     * rename.png
     * rename.svg
 
+### 出力タイプ指定
+
+指定されたファイルタイプを生成します。  
+pngまたはsvgを指定できます。  
+出力タイプ無指定の場合は両方出力します。
+
+```sh
+npx matrix-renderer render -- example.yaml --out output/rename -out-type svg
+```
+* 📁
+  * example.yaml
+  * 📁output
+    * rename.svg
+
 ### ヘルプ
 
 CLIのヘルプ表示。
@@ -97,40 +111,41 @@ CLIのヘルプ表示。
 npx matrix-renderer render -- --help
 
 Usage:
-  matrix-renderer render <input.yaml> [--out <output-prefix>]
+  matrix-renderer render -- <input.yaml> [Options]
 
 Options:
-  --out <prefix>  Output path without an extension (writes .svg and .png)
+  --out <prefix>  Output path without an extension
+  --out-type <type> Output file type (png, svg) [generates both if omitted]
   -h, --help      Show this help
 ```
 
 ## 🛠️ YAML template / YAML設定テンプレート
 
 ```yaml
-title: テンプレートです # * マトリクスタイトル
-width: 800 # マトリクスの幅
-xAxis: # * X軸
-  label: X軸の説明 # * x軸のラベル
-  values: # * X軸の設定
-    - label: 列１ # * X軸のラベル
-      color: "#d6eaf8" # 列の色（RGBまたはRRGGBB形式）
-    - label: 列２ # * X軸のラベル　※色指定しない場合
-    - label: 列３
-      color: "#f4e2ad"
-yAxis: # * Y軸
-  label: Y軸の説明 # * Y軸のラベル
-  values: # * Y軸の設定
-    - label: 行１ # * Y軸のラベル
-      color: "#c5e4ec" # 行の色（RGBまたはRRGGBB形式）
-    - label: 行２ # * Y軸のラベル　※色指定しない場合
-items: # * プロットするアイテムの設定
-  - id: item1 # * アイテムのID
-    label: アイテム１ # * アイテムのラベル
-    lane: 行１ # * アイテムを配置する行（Y軸のラベルを指定）
-    from: 列１ # * アイテムを配置する開始列（X軸のラベルを指定）
-    to: 列１ # * アイテムを配置する終了列（X軸のラベルを指定）
-    url: https://example.com/guide # アイテムのリンク
-    color: "#245080" # アイテムの色（RGBまたはRRGGBB形式）
+title: テンプレートです # マトリクスタイトル
+width: 800 # マトリクスの幅　※任意（デフォルト1400）
+xAxis: # X軸
+  label: X軸の説明 # x軸のラベル
+  values: # X軸の設定
+    - label: 列１ # X軸のラベル
+      color: "#d6eaf8" # 列の色（RGBまたはRRGGBB形式）　※任意
+    - label: 列２ # X軸のラベル（色指定なし）
+    - label: 列３ # X軸のラベル（色指定なし、属性名あり）
+yAxis: # Y軸
+  label: Y軸の説明 # Y軸のラベル
+  values: # Y軸の設定
+    - label: 行１ # Y軸のラベル
+      color: "#c5e4ec" # 行の色（RGBまたはRRGGBB形式）　※任意
+    - label: 行２ # Y軸のラベル（色指定なし）
+    - label: 行３ # Y軸のラベル（色指定なし、属性名あり）
+items: # プロットするアイテムの設定
+  - id: item1 # アイテムのID
+    label: アイテム１ # アイテムのラベル
+    lane: 行１ # アイテムを配置する行（Y軸のラベルを指定）
+    from: 列１ # アイテムを配置する開始列（X軸のラベルを指定）
+    to: 列１ # アイテムを配置する終了列（X軸のラベルを指定）
+    url: https://example.com/guide # アイテムのリンク　※任意
+    color: "#245080" # アイテムの色（RGBまたはRRGGBB形式）　※任意
 ```
 * X軸
   * 描画順: xAxis.valuesに定義された順に描画します
