@@ -1,10 +1,24 @@
 <div align="center">
 
-# 📊 matrix-renderer
+# <img src="./assets/logo.jpg" width="32" height="32" valign="middle" alt="logo" /> matrix-renderer
+
+<!-- バージョン & パッケージ情報 -->
+[![npm version](https://img.shields.io/npm/v/matrix-renderer.svg)](https://www.npmjs.com/package/matrix-renderer)
+[![npm unpack size](https://img.shields.io/npm/unpacked-size/matrix-renderer)](https://www.npmjs.com/package/matrix-renderer)
+[![npm license](https://img.shields.io/npm/l/matrix-renderer.svg)](https://www.npmjs.com/package/matrix-renderer)
+[![npm downloads](https://img.shields.io/npm/dm/matrix-renderer.svg)](https://www.npmjs.com/package/matrix-renderer)
+
+<!-- テスト & カバレッジ -->
+[![CI and Publish](https://github.com/ubata-mamezou/matrix-renderer/actions/workflows/publish.yaml/badge.svg)](https://github.com/ubata-mamezou/matrix-renderer/actions/workflows/publish.yaml)
+[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen.svg)](https://github.com/ubata-mamezou/matrix-renderer)
+
+<!-- セキュリティ -->
+[![Socket Badge](https://socket.dev/api/badge/npm/package/matrix-renderer)](https://socket.dev/npm/package/matrix-renderer)
+[![Known Vulnerabilities](https://snyk.io/test/npm/matrix-renderer/badge.svg)](https://snyk.io/test/npm/matrix-renderer)
+[![npm provenance](https://img.shields.io/badge/provenance-verified-blue.svg)](https://www.npmjs.com/package/matrix-renderer)
 
 </div>
 
-[![CI and Publish](https://github.com/ubata-mamezou/matrix-renderer/actions/workflows/publish.yaml/badge.svg)](https://github.com/ubata-mamezou/matrix-renderer/actions/workflows/publish.yaml)
 
 ## Overview / 概要
 
@@ -159,7 +173,3 @@ items: # プロットするアイテムの設定
 
 [`examples/`](examples/)に入力ファイル、  
 [`output/`](output/)に生成したイメージファイルを格納しています。
-
-## 📄 License / ライセンス
-
-[MIT License](LICENSE) © 2026 ubata-mamezou

@@ -1,14 +1,20 @@
 # .npmignore
+
+# setting
 .github/
 .vscode/
-examples/
-node_modules/
-*.bak
-**/*.bak
-output/
-test/
-test-behavior/
 .gitignore
 biome.json
+
+# distribution
+
+assets/
+examples/
+node_modules/
+output/
+
+# test
+test/
+test-behavior/
 render-examples.sh
 test-behavior.sh
