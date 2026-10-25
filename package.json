@@ -16,7 +16,8 @@
     "lint": "biome lint src test",
     "render": "node src/cli.js render",
     "render:examples": "bash render-examples.sh",
-    "test": "node --test && bash test-behavior.sh"
+    "test": "node --test && bash test-behavior.sh",
+    "test:coverage": "node --test --experimental-test-coverage && bash test-behavior.sh"
   },
 "repository": {
     "type": "git",
