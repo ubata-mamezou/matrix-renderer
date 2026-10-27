@@ -1,7 +1,9 @@
 {
   "name": "matrix-renderer",
   "version": "0.1.2",
-"main": "src/cli.js",  "type": "module",
+  "description": "Render 2D matrix diagrams (SVG/PNG) from YAML definitions.",
+  "main": "src/cli.js",
+  "type": "module",
   "bin": {
     "matrix-renderer": "./src/cli.js"
   },
@@ -19,7 +21,7 @@
     "test": "node --test && bash test-behavior.sh",
     "test:coverage": "node --test --experimental-test-coverage && bash test-behavior.sh"
   },
-"repository": {
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/ubata-mamezou/matrix-renderer.git"
   },
@@ -40,7 +42,7 @@
   "publishConfig": {
     "access": "public"
   },
-    "dependencies": {
+  "dependencies": {
     "sharp": "^0.35.5",
     "yaml": "^2.8.1"
   },
