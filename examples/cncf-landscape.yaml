@@ -1,0 +1,83 @@
+# 出典: https://landscape.cncf.io/
+# CNCF Landscapeからの抜粋。フェーズと描画区間は利用例として独自に整理しています。
+title: CNCF Landscape ピックアップ
+width: 1400
+xAxis:
+  label: 利用フェーズ（代表例）
+  values:
+    - label: 構成・定義
+      color: "#eaf2f8"
+    - label: デプロイ・同期
+      color: "#e8f8f5"
+    - label: 実行・制御
+      color: "#f4ecf7"
+    - label: 監視・分析
+      color: "#fcf3cf"
+yAxis:
+  label: 技術カテゴリ
+  values:
+    - label: 実行基盤
+      color: "#ebf5fb"
+    - label: アプリ定義
+      color: "#e8f8f5"
+    - label: 継続的デリバリー
+      color: "#f4ecf7"
+    - label: 可観測性
+      color: "#fef9e7"
+items:
+  - id: kubernetes
+    label: Kubernetes（コンテナ管理）
+    lane: 実行基盤
+    from: デプロイ・同期
+    to: 実行・制御
+    url: https://kubernetes.io/
+    color: "#326ce5"
+  - id: helm
+    label: Helm（パッケージ管理）
+    lane: アプリ定義
+    from: 構成・定義
+    to: デプロイ・同期
+    url: https://helm.sh/
+    color: "#0f1689"
+  - id: argo
+    label: Argo（ワークフロー・GitOps）
+    lane: 継続的デリバリー
+    from: デプロイ・同期
+    to: 実行・制御
+    url: https://argoproj.github.io/
+    color: "#ef7b4d"
+  - id: flux
+    label: Flux（GitOps）
+    lane: 継続的デリバリー
+    from: デプロイ・同期
+    to: 実行・制御
+    url: https://fluxcd.io/
+    color: "#5468ff"
+  - id: opentelemetry
+    label: OpenTelemetry（計装・収集）
+    lane: 可観測性
+    from: 構成・定義
+    to: 監視・分析
+    url: https://opentelemetry.io/
+    color: "#f5a800"
+  - id: prometheus
+    label: Prometheus（メトリクス監視）
+    lane: 可観測性
+    from: 監視・分析
+    to: 監視・分析
+    url: https://prometheus.io/
+    color: "#e6522c"
+  - id: thanos
+    label: Thanos（メトリクス長期保存）
+    lane: 可観測性
+    from: 監視・分析
+    to: 監視・分析
+    url: https://thanos.io/
+    color: "#6d41ff"
+  - id: jaeger
+    label: Jaeger（分散トレーシング）
+    lane: 可観測性
+    from: 監視・分析
+    to: 監視・分析
+    url: https://www.jaegertracing.io/
+    color: "#60d0e4"

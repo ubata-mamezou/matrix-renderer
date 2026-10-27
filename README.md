@@ -31,9 +31,9 @@ YAMLからマトリクスイメージファイル（png/svg）を生成するCLI
 マトリクス図（カバレッジ表、機能一覧、ロードマップなど）をExcelやDraw.ioで管理していませんか？それ、すぐに古くなり、Gitでの差分管理もできません。
 matrix-rendererは、プレーンなYAMLテキストをGitで管理するだけで、構造化されたマトリクス画像（PNG/SVG）を自動生成します。コードとドキュメントの乖離をなくし、ドキュメンテーションを自動化（Doc as Code）するための軽量ツールです。
 
-![sample](output/landscape.svg)
+![sample](output/landscape.png)
 
-*指定可能な値*
+**指定可能な値**
 * タイトル
 * イメージ幅
 * X軸のラベル、テキスト、色
