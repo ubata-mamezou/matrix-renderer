@@ -90,7 +90,7 @@ npm run render -- -h >> $TEST_LOG_FILE 2>&1
 
 TEST_CASE="case2-2"
 start_test_case $TEST_CASE "help parameter" "show help"
-npm run render -- -help >> $TEST_LOG_FILE 2>&1
+npm run render -- --help >> $TEST_LOG_FILE 2>&1
 
 TEST_CASE="case3"
 start_test_case $TEST_CASE "input parameter only" "output image(to same directory)"
@@ -129,6 +129,13 @@ start_test_case $TEST_CASE "input, output and outputType parameter" "output imag
     npm run render -- $TEST_YAML_FILE --out $TEST_DIR/$TEST_CASE/$OTHER_FILE_NAME --out-type png >> $TEST_LOG_FILE 2>&1
     assert_exists_file $TEST_DIR/$TEST_CASE/$OTHER_FILE_NAME.png
     assert_not_exists_file $TEST_DIR/$TEST_CASE/$OTHER_FILE_NAME.svg
+end_test_case
+
+TEST_CASE="case5"
+start_test_case $TEST_CASE "input, output and language parameter" "output image(message language is ja)"
+    npm run render -- $TEST_YAML_FILE --out $TEST_DIR/$TEST_CASE/$OTHER_FILE_NAME --lang ja >> $TEST_LOG_FILE 2>&1
+    assert_exists_file $TEST_DIR/$TEST_CASE/$OTHER_FILE_NAME.png
+    assert_exists_file $TEST_DIR/$TEST_CASE/$OTHER_FILE_NAME.svg
 end_test_case
 
 echo "end test" >> $TEST_LOG_FILE 2>&1

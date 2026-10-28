@@ -119,12 +119,21 @@ pngまたはsvgを指定できます。
 出力タイプ無指定の場合は両方出力します。
 
 ```sh
-npx matrix-renderer render -- example.yaml --out output/rename -out-type svg
+npx matrix-renderer render -- example.yaml --out output/rename --out-type svg
 ```
 * 📁
   * example.yaml
   * 📁output
     * rename.svg
+
+### メッセージの言語指定
+
+エラー、進捗、ヘルプの言語を切り替えます。  
+enまたはjaを指定できます。無指定や未対応の値の場合はenです。
+
+```sh
+npx matrix-renderer render -- example.yaml --lang ja
+```
 
 ### ヘルプ
 
@@ -137,9 +146,10 @@ Usage:
   matrix-renderer render -- <input.yaml> [Options]
 
 Options:
-  --out <prefix>  Output path without an extension
+  --out <prefix>    Output path without an extension
   --out-type <type> Output file type (png, svg) [generates both if omitted]
-  -h, --help      Show this help
+  --lang <lang>     Message language (en, ja) [default: en]
+  -h, --help        Show this help
 ```
 
 ## 🛠️ YAML template / YAML設定テンプレート

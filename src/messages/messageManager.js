@@ -1,78 +1,62 @@
 // 循環参照を避けるため、ここではerror.jsは参照しない
-const messages = {
-  general: "{message}",
-  fail: {
-    application: "application error: {option}",
-    unSupportOps: "un supported operation: {option}",
-  },
-  biz: {
-    default: "business error: {option}",
-    unknownOption: "不明なオプションです: {arg}\n{usage}",
-    warnInputOption: "入力YAMLを1件指定してください。\n{usage}",
-    warnOutOption: "--outの後に出力先を指定してください。",
-    warnOutTypeOption: "--out-typeの後にファイルタイプを指定してください。",
-    warnOutTypeOptionValues: "--out-typeはsvgまたはpngを指定してください。",
-  },
-  validation: {
-    general: "{message}",
-    default: "validation error: {option}",
-    anyMatch: "{label} does not meet the specified check: {value}",
-    type: {
-      valid: "{label} is invalid: {value}",
-      string: "{label} is not string: {value}",
-      object: "{label} is not object: {value}",
-      array: "{label} is not array: {value}",
-    },
-    number: {
-      inRange: `{label} between {min} and {max}`,
-    },
-    array: {
-      uniqueBy: `Duplicate keys in the {label}: {value}`,
-    },
-    empty: "{label} is not empty: {value}",
-    notEmpty: "{label} is empty: {value}",
-    format: {
-      rgb: `{label} is not #RGB or #RRGGBB style: {value}`,
-    },
-    hasAttribute: "{label} attribute does not exist",
-    duplicate: "{label} is duplicated: {value}",
-    notInList: "{label} is not in list: {value}",
-    order:
-      'Please specify a value for "from" that precedes the value for "to": {from}, {to}',
-  },
-  url: {
-    badValue: "The value to be converted is not a URL.",
-    badProtocol: "Please specify a URL using HTTP(S).",
-  },
-};
+import en from "./en.js";
+import ja from "./ja.js";
 
-export function getMessageTemplate(messageId) {
-  if (typeof messageId !== "string" || messageId.length === 0) {
-    throw new Error("Message ID must be a non-empty string.");
-  }
+export const DEFAULT_LANG = "en";
+const dictionaries = { en, ja };
 
-  let current = messages;
-  const keys = messageId.includes(".") ? messageId.split(".") : [messageId];
+/**
+ * 未対応の言語は既定の言語として扱う。
+ * @param {unknown} lang
+ * @returns {string} 対応している言語
+ */
+export function resolveLang(lang) {
+  return typeof lang === "string" && Object.hasOwn(dictionaries, lang)
+    ? lang
+    : DEFAULT_LANG;
+}
 
-  for (const key of keys) {
+/** @returns {string | object | undefined} 辞書に定義が無い場合はundefined */
+function lookup(dictionary, messageId) {
+  let current = dictionary;
+  for (const key of messageId.split(".")) {
     if (
       current === null ||
       typeof current !== "object" ||
       !Object.hasOwn(current, key)
     ) {
-      throw new Error(`Message ID does not exist.: ${messageId}`);
+      return undefined;
     }
-
     current = current[key];
   }
+  return current;
+}
 
-  if (typeof current !== "string") {
+/**
+ * メッセージIDに対応するテンプレートを返す。指定言語に定義が無い場合は既定の言語で返す。
+ * @param {string} messageId
+ * @param {string} [lang]
+ * @returns {string}
+ */
+export function getMessageTemplate(messageId, lang = DEFAULT_LANG) {
+  if (typeof messageId !== "string" || messageId.length === 0) {
+    throw new Error("Message ID must be a non-empty string.");
+  }
+
+  const template =
+    lookup(dictionaries[resolveLang(lang)], messageId) ??
+    lookup(dictionaries[DEFAULT_LANG], messageId);
+
+  if (template === undefined) {
+    throw new Error(`Message ID does not exist.: ${messageId}`);
+  }
+  if (typeof template !== "string") {
     throw new Error(
       `Message ID that is not associated with any template has been specified.: ${messageId}`,
     );
   }
 
-  return current;
+  return template;
 }
 
 export function formatMessage(template, params) {
@@ -82,4 +66,15 @@ export function formatMessage(template, params) {
     }
     return String(params[key]);
   });
+}
+
+/**
+ * メッセージIDとパラメータから、指定言語のメッセージを組み立てる。
+ * @param {string} messageId
+ * @param {object} params
+ * @param {string} [lang]
+ * @returns {string}
+ */
+export function renderMessage(messageId, params = {}, lang = DEFAULT_LANG) {
+  return formatMessage(getMessageTemplate(messageId, lang), params);
 }
