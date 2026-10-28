@@ -48,7 +48,7 @@ describe('is.type', () => {
     ]);
   });
 
-  describe('integer', { todo: 'is.type.integer の判定が反転している既知の不具合' }, () => {
+  describe('integer', () => {
     verifyPredicate(is.type.integer, [
       ['1', 1, true],
       ['1.5', 1.5, false],

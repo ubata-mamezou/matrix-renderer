@@ -1,6 +1,6 @@
 {
   "name": "matrix-renderer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Render 2D matrix diagrams (SVG/PNG) from YAML definitions.",
   "main": "src/cli.js",
   "type": "module",
