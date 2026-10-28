@@ -36,7 +36,7 @@ export const is = {
      * @returns {boolean} チェック結果（true: チェックOK）
      */
     number: (value) => typeof value === "number" && !Number.isNaN(value),
-    integer: (value) => !Number.isInteger(value),
+    integer: (value) => Number.isInteger(value),
     boolean: (value) => typeof value === "boolean",
     object: (value) =>
       value !== null && typeof value === "object" && !Array.isArray(value),
@@ -123,11 +123,22 @@ export const assert = {
   },
   type: {
     /**
-     * @param {string} label @param {*} value
+     * 値が有効な型であることをチェックする。
+     * @param {string} label 項目名
+     * @param {*} value チェック対象値
      */
     valid: (label, value) => {
       if (is.type.invalid(value))
         throwErr.validate("validation.type.valid", { label, value });
+    },
+    /**
+     * 値が無効な型であることをチェックする。
+     * @param {string} label 項目名
+     * @param {*} value チェック対象値
+     */
+    invalid: (label, value) => {
+      if (is.type.valid(value))
+        throwErr.validate("validation.type.invalid", { label, value });
     },
     /**
      * @param {string} label @param {*} value

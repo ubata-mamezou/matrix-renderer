@@ -46,7 +46,7 @@ export class MatrixDefinition {
       source.title ?? MatrixDefinition.defaultTitle,
     );
     assert.type.array("items", source.items);
-    if (is.notEmpty.number(source.width))
+    if (is.type.valid(source.width))
       assert.number.inRange(
         "width",
         source.width,
@@ -92,18 +92,13 @@ export class AxisDefinition {
     assert.type.valid(messageLabel, source);
     assert.notEmpty.object(messageLabel, source);
     assert.notEmpty.string(`${messageLabel}.label`, source.label);
-    assert.type.array(`${messageLabel}.values`, source.values);
+    assert.notEmpty.array(`${messageLabel}.values`, source.values);
 
     const avs = source.values.map((value, index) => {
-      if (is.type.string(value)) {
-        return AxisValue.from(`${messageLabel}.values[${index}]`, value);
-      } else {
-        return AxisValue.from(
-          `${messageLabel}.values[${index}]`,
-          value.label,
-          value.color,
-        );
-      }
+      const valueLabel = `${messageLabel}.values[${index}]`;
+      if (is.type.string(value)) return AxisValue.from(valueLabel, value);
+      assert.type.object(valueLabel, value);
+      return AxisValue.from(valueLabel, value.label, value.color);
     });
     assert.array.uniqueBy(`${messageLabel}.values`, avs, "label");
 
@@ -217,9 +212,16 @@ export class MatrixItem {
     for (const key of ["id", "label", "lane", "from", "to"]) {
       assert.notEmpty.string(messageLabel, source[key]);
     }
-    if (is.notEmpty.string(source.url)) toUrl(source.url);
-    if (is.notEmpty.string(source.color))
+    if (is.notEmpty.string(source.url)) {
+      toUrl(source.url);
+    } else {
+      assert.type.invalid(`${messageLabel}.url`, source.url);
+    }
+    if (is.notEmpty.string(source.color)) {
       assert.format.rgb(`${messageLabel}.color`, source.color);
+    } else {
+      assert.type.invalid(`${messageLabel}.color`, source.color);
+    }
 
     return new MatrixItem(
       source.id,
