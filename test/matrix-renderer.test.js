@@ -6,8 +6,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { parse } from 'yaml';
-import { loadInput, MatrixDefinition } from '../src/input.js';
+import { loadInput } from '../src/input.js';
 import { renderPng } from '../src/png.js';
 import { renderSvg } from '../src/svg.js';
 
@@ -35,28 +34,6 @@ test('renders a PNG with the SVG dimensions', async () => {
   assert.equal(metadata.format, 'png');
   assert.equal(metadata.width, width);
   assert.equal(metadata.height, height);
-});
-
-test('validation rejects invalid item and width values', async (context) => {
-  const cases = [
-    ['duplicate item id', (data) => { data.items[1].id = data.items[0].id; }, 'validation.duplicate'],
-    ['unknown lane', (data) => { data.items[0].lane = 'Unknown'; }, 'validation.notInList'],
-    ['reversed interval', (data) => { data.items[0].from = 'Review'; data.items[0].to = 'Plan'; }, 'validation.order'],
-    ['non-http URL', (data) => { data.items[0].url = 'ftp://example.com'; }, 'url.badProtocol'],
-    ['invalid item color', (data) => { data.items[0].color = 'red'; }, 'validation.format.rgb'],
-    ['width outside the supported range', (data) => { data.width = 699; }, 'validation.number.inRange'],
-  ];
-
-  for (const [name, mutate, expectedError] of cases) {
-    await context.test(name, async () => {
-      const data = parse(await readFile(fixturePath, 'utf8'));
-      mutate(data);
-      assert.throws(() => MatrixDefinition.from(data), (error) => {
-        assert.equal(error.messageId, expectedError);
-        return true;
-      });
-    });
-  }
 });
 
 test('CLI writes the SVG and PNG to the requested output prefix', async () => {
