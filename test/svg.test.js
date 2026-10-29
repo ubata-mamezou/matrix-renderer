@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 import { MatrixDefinition } from '../src/input.js';
-import { RenderItem, renderSvg, Track } from '../src/svg.js';
+import { RenderItem, renderSvg, Track, MARGIN } from '../src/svg.js';
 
 /** 3列（Plan、Doing、Done）と3レーン（Ops、Data、Empty）を持つ定義。Opsの2項目は期間が重なる。 */
 const definition = (overrides = {}) =>
@@ -83,7 +83,7 @@ describe('renderSvg', () => {
     const { svg, width, height } = renderSvg(definition());
 
     assert.equal(width, 800);
-    assert.equal(height, 112 + (116 + 66 + 58) + 44);
+    assert.equal(height, MARGIN.top + (116 + 66 + 58) + MARGIN.bottom);
     assert.ok(svg.startsWith(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="${height}" viewBox="0 0 800 ${height}">`));
     assert.ok(svg.endsWith('</svg>'));
   });
@@ -103,14 +103,14 @@ describe('renderSvg', () => {
   test('draws one more vertical grid line than columns', () => {
     const { svg } = renderSvg(definition());
 
-    assert.equal(svg.match(/<line x1="[\d.]+" y1="112" /g).length, 4);
+    assert.equal(svg.match(/<line x1="[\d.]+" y1="120" /g).length, 4);
   });
 
   test('alternates the lane backgrounds', () => {
     const { svg } = renderSvg(definition());
 
-    assert.ok(svg.includes('<rect x="0" y="112" width="800" height="116" fill="#f4f7fa"/>'));
-    assert.ok(svg.includes('<rect x="0" y="228" width="800" height="66" fill="#ffffff"/>'));
+    assert.ok(svg.includes('<rect x="0" y="120" width="800" height="116" fill="#f4f7fa"/>'));
+    assert.ok(svg.includes('<rect x="0" y="236" width="800" height="66" fill="#ffffff"/>'));
   });
 
   test('uses the column color for the header', () => {
@@ -153,7 +153,7 @@ describe('renderSvg', () => {
     source.items = [{ id: 'long', label: '一'.repeat(25), lane: 'Ops', from: 'Plan', to: 'Plan' }];
     const { svg } = renderSvg(source);
 
-    assert.equal(svg.match(/class="bar-label"/g).length, 3);
+    assert.equal(svg.match(/class="bar-label"/g).length, 2);
   });
 
   test('places overlapping items on separate tracks and reuses a track when intervals only touch', () => {
@@ -182,10 +182,9 @@ describe('renderSvg', () => {
       ],
     });
     const { svg } = renderSvg(source);
-
-    assert.equal(svg.match(/class="bar-label"/g).length, 3);
-    assert.ok(svg.includes('width="800" height="361"'));
-    assert.ok(svg.includes('height="89" fill="#f4f7fa"'));
+    assert.equal(svg.match(/class="bar-label"/g).length, 2);
+    assert.ok(svg.includes('width="800" height="72"'));
+    assert.ok(svg.includes('height="72" fill="#f4f7fa"'));
   });
 
   test('escapes special characters in every text and attribute', () => {

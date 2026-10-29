@@ -223,7 +223,7 @@ describe('renderToFiles / main', () => {
       out.stderr(),
       '[1/3] 入力データを読み込みました\n[2/3] SVGを描画しました\n[3/3] SVGファイルを出力しました\n',
     );
-    assert.equal(out.stdout(), `出力しました: ${prefix}.svg (800x419)\n`);
+    assert.equal(out.stdout(), `出力しました: ${prefix}.svg (800x423)\n`);
   });
 
   test('main reports errors in Japanese with --lang ja', async () => {
@@ -257,7 +257,7 @@ describe('renderToFiles / main', () => {
         '',
       ].join('\n'),
     );
-    assert.equal(out.stdout(), `Generated ${prefix}.svg (800x419)\nGenerated ${prefix}.png (800x419)\n`);
+    assert.equal(out.stdout(), `Generated ${prefix}.svg (800x423)\nGenerated ${prefix}.png (800x423)\n`);
     assert.ok((await readFile(`${prefix}.svg`, 'utf8')).startsWith('<svg'));
     assert.ok((await readFile(`${prefix}.png`)).length > 0);
   });

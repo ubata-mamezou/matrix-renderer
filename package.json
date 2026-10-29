@@ -14,12 +14,14 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "build:dev": "npm run lint && npm audit fix && npm run test && npm run render:examples",
+    "_build:examples": "bash render-examples.sh",
+    "build:dev": "npm run lint && npm audit fix && npm run test && npm run _build:examples",
     "lint": "biome lint src test",
     "render": "node src/cli.js render",
-    "render:examples": "bash render-examples.sh",
-    "test": "node --test && bash test-behavior.sh",
-    "test:coverage": "node --test --experimental-test-coverage && bash test-behavior.sh"
+    "_test:build-resource": "npm run render -- test/fixtures/all-features.yaml --out-type svg",
+    "_test:behavior": "bash test-behavior.sh",
+    "test": "npm run _test:build-resource && node --test && npm run _test:behavior",
+    "test:coverage": "npm run _test:build-resource && node --test --experimental-test-coverage && npm run _test:behavior"
   },
   "repository": {
     "type": "git",

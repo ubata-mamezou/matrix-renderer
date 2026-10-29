@@ -23,7 +23,7 @@ test('renders all supported settings to the SVG baseline', async () => {
 
   assert.equal(result.svg, baseline);
   assert.equal(result.width, 800);
-  assert.equal(result.height, 419);
+  assert.equal(result.height, 423);
 });
 
 test('renders a PNG with the SVG dimensions', async () => {
@@ -45,8 +45,8 @@ test('CLI writes the SVG and PNG to the requested output prefix', async () => {
       encoding: 'utf8',
     });
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /Generated .*matrix\.svg \(800x419\)/);
-    assert.match(result.stdout, /Generated .*matrix\.png \(800x419\)/);
+    assert.match(result.stdout, /Generated .*matrix\.svg \(800x423\)/);
+    assert.match(result.stdout, /Generated .*matrix\.png \(800x423\)/);
 
     const [svg, png] = await Promise.all([
       readFile(`${outputPrefix}.svg`, 'utf8'),
@@ -58,7 +58,7 @@ test('CLI writes the SVG and PNG to the requested output prefix', async () => {
     assert.equal(svg, baseline);
     assert.equal(metadata.format, 'png');
     assert.equal(metadata.width, 800);
-    assert.equal(metadata.height, 419);
+    assert.equal(metadata.height, 423);
   } finally {
     await rm(temporaryDirectory, { recursive: true, force: true });
   }
@@ -86,7 +86,7 @@ test('CLI --out-type writes only the selected format', async (context) => {
         assert.equal(result.status, 0, result.stderr);
         await readFile(selectedPath);
         await assert.rejects(readFile(`${outputPrefix}.${otherType}`), { code: 'ENOENT' });
-        assert.match(result.stdout, new RegExp(`Generated .*\\.${outputType} \\(800x419\\)`));
+        assert.match(result.stdout, new RegExp(`Generated .*\\.${outputType} \\(800x423\\)`));
       } finally {
         await rm(temporaryDirectory, { recursive: true, force: true });
       }

@@ -1,52 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="950" height="404" viewBox="0 0 950 404">
+<svg xmlns="http://www.w3.org/2000/svg" width="950" height="408" viewBox="0 0 950 408">
 <rect width="100%" height="100%" fill="#ffffff"/>
 <style>text{font-family:Arial,"Noto Sans JP","Yu Gothic",sans-serif;fill:#172c46}.axis{font-size:13px}.title{font-size:24px;font-weight:700}.lane-label{font-size:15px;font-weight:700}.bar-label{font-size:14px;font-weight:600}.item-link{cursor:pointer}.item-link text{text-decoration:underline}.item-link:hover rect,.item-link:focus-visible rect{fill:#c4def4;stroke:#145c91;stroke-width:2}</style>
-<text x="190" y="42" class="title">社内標準テクノロジー・カタログ</text>
-<text x="190" y="78" class="axis" font-weight="700">採用ステータス</text>
-<text x="24" y="98" class="axis" font-weight="700">カテゴリ</text>
-<rect x="190" y="80" width="181" height="32" fill="#ebf5fb"/>
-<text x="280.5" y="101" class="axis" text-anchor="middle" style="fill:#172c46">評価中（Evaluate）</text>
-<rect x="371" y="80" width="181" height="32" fill="#e8f8f5"/>
-<text x="461.5" y="101" class="axis" text-anchor="middle" style="fill:#172c46">推奨（Adopt）</text>
-<rect x="552" y="80" width="181" height="32" fill="#fef9e7"/>
-<text x="642.5" y="101" class="axis" text-anchor="middle" style="fill:#172c46">凍結（Hold）</text>
-<rect x="733" y="80" width="181" height="32" fill="#f9ebd2"/>
-<text x="823.5" y="101" class="axis" text-anchor="middle" style="fill:#172c46">廃止予定（Retire）</text>
-<rect x="0" y="112" width="950" height="116" fill="#f4f7fa"/>
-<rect x="0" y="112" width="178" height="116" fill="#fafafa"/>
-<text x="18" y="175" class="lane-label" style="fill:#172c46">言語・フレームワーク</text>
-<line x1="0" y1="228" x2="950" y2="228" stroke="#d7e0e8"/>
-<rect x="0" y="228" width="950" height="66" fill="#ffffff"/>
-<rect x="0" y="228" width="178" height="66" fill="#fafafa"/>
-<text x="18" y="266" class="lane-label" style="fill:#172c46">データベース</text>
-<line x1="0" y1="294" x2="950" y2="294" stroke="#d7e0e8"/>
-<rect x="0" y="294" width="950" height="66" fill="#f4f7fa"/>
-<rect x="0" y="294" width="178" height="66" fill="#fafafa"/>
-<text x="18" y="332" class="lane-label" style="fill:#172c46">フロントエンド</text>
-<line x1="0" y1="360" x2="950" y2="360" stroke="#d7e0e8"/>
-<line x1="190" y1="112" x2="190" y2="360" stroke="#d7e0e8"/>
-<line x1="371" y1="112" x2="371" y2="360" stroke="#d7e0e8"/>
-<line x1="552" y1="112" x2="552" y2="360" stroke="#d7e0e8"/>
-<line x1="733" y1="112" x2="733" y2="360" stroke="#d7e0e8"/>
-<line x1="914" y1="112" x2="914" y2="360" stroke="#d7e0e8"/>
+<text x="200" y="42" class="title">社内標準テクノロジー・カタログ</text>
+<text x="200" y="78" class="axis" font-weight="700">採用ステータス</text>
+<text x="24" y="106" class="axis" font-weight="700">カテゴリ</text>
+<rect x="200" y="88" width="187" height="32" fill="#ebf5fb"/>
+<text x="293.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">評価中（Evaluate）</text>
+<rect x="387" y="88" width="187" height="32" fill="#e8f8f5"/>
+<text x="480.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">推奨（Adopt）</text>
+<rect x="574" y="88" width="187" height="32" fill="#fef9e7"/>
+<text x="667.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">凍結（Hold）</text>
+<rect x="761" y="88" width="187" height="32" fill="#f9ebd2"/>
+<text x="854.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">廃止予定（Retire）</text>
+<rect x="0" y="120" width="950" height="116" fill="#f4f7fa"/>
+<rect x="0" y="120" width="188" height="116" fill="#fafafa"/>
+<text x="18" y="183" class="lane-label" style="fill:#172c46">言語・フレームワーク</text>
+<line x1="0" y1="236" x2="950" y2="236" stroke="#d7e0e8"/>
+<rect x="0" y="236" width="950" height="66" fill="#ffffff"/>
+<rect x="0" y="236" width="188" height="66" fill="#fafafa"/>
+<text x="18" y="274" class="lane-label" style="fill:#172c46">データベース</text>
+<line x1="0" y1="302" x2="950" y2="302" stroke="#d7e0e8"/>
+<rect x="0" y="302" width="950" height="66" fill="#f4f7fa"/>
+<rect x="0" y="302" width="188" height="66" fill="#fafafa"/>
+<text x="18" y="340" class="lane-label" style="fill:#172c46">フロントエンド</text>
+<line x1="0" y1="368" x2="950" y2="368" stroke="#d7e0e8"/>
+<line x1="200" y1="120" x2="200" y2="368" stroke="#d7e0e8"/>
+<line x1="387" y1="120" x2="387" y2="368" stroke="#d7e0e8"/>
+<line x1="574" y1="120" x2="574" y2="368" stroke="#d7e0e8"/>
+<line x1="761" y1="120" x2="761" y2="368" stroke="#d7e0e8"/>
+<line x1="948" y1="120" x2="948" y2="368" stroke="#d7e0e8"/>
 <g data-item-id="lang-python-ai"><a href="https://tech-radar.internal" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="Python 3.12 (AI/データ分析用途)を開く" class="item-link"><title>Python 3.12 (AI/データ分析用途)を開く</title>
-<rect x="194" y="128" width="354" height="34" rx="3" fill="#2e86c1" stroke="#21608b"/>
-<text x="371" y="150.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">Python 3.12 (AI/データ分析用途)</text>
+<rect x="204" y="136" width="366" height="34" rx="3" fill="#2e86c1" stroke="#21608b"/>
+<text x="387" y="158.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">Python 3.12 (AI/データ分析用途)</text>
 </a></g>
 <g data-item-id="lang-java21"><a href="https://tech-radar.internal" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="Java 21 (LTS)を開く" class="item-link"><title>Java 21 (LTS)を開く</title>
-<rect x="375" y="178" width="173" height="34" rx="3" fill="#1e8449" stroke="#165f35"/>
-<text x="461.5" y="200.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">Java 21 (LTS)</text>
+<rect x="391" y="186" width="179" height="34" rx="3" fill="#1e8449" stroke="#165f35"/>
+<text x="480.5" y="208.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">Java 21 (LTS)</text>
 </a></g>
 <g data-item-id="db-postgres"><a href="https://tech-radar.internal" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="PostgreSQL 16を開く" class="item-link"><title>PostgreSQL 16を開く</title>
-<rect x="375" y="244" width="173" height="34" rx="3" fill="#1e8449" stroke="#165f35"/>
-<text x="461.5" y="266.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">PostgreSQL 16</text>
+<rect x="391" y="252" width="179" height="34" rx="3" fill="#1e8449" stroke="#165f35"/>
+<text x="480.5" y="274.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">PostgreSQL 16</text>
 </a></g>
 <g data-item-id="db-oracle-old"><a href="https://tech-radar.internal" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="Oracle Database 19c（新規採用禁止）を開く" class="item-link"><title>Oracle Database 19c（新規採用禁止）を開く</title>
-<rect x="556" y="244" width="354" height="34" rx="3" fill="#b03a2e" stroke="#7f2a21"/>
-<text x="733" y="266.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">Oracle Database 19c（新規採用禁止）</text>
+<rect x="578" y="252" width="366" height="34" rx="3" fill="#b03a2e" stroke="#7f2a21"/>
+<text x="761" y="274.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">Oracle Database 19c（新規採用禁止）</text>
 </a></g>
 <g data-item-id="fe-react"><a href="https://tech-radar.internal" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="React 19 + Next.jsを開く" class="item-link"><title>React 19 + Next.jsを開く</title>
-<rect x="194" y="310" width="173" height="34" rx="3" fill="#2e86c1" stroke="#21608b"/>
-<text x="280.5" y="332.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">React 19 + Next.js</text>
+<rect x="204" y="318" width="179" height="34" rx="3" fill="#2e86c1" stroke="#21608b"/>
+<text x="293.5" y="340.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">React 19 + Next.js</text>
 </a></g>
 </svg>

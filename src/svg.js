@@ -16,7 +16,7 @@ const TRACK_GAP = 8;
 const TRACK_MIN_HEIGHT = 42;
 const LANE_PADDING = 12;
 const LANE_MIN_HEIGHT = 58;
-const MARGIN = { top: 112, right: 36, bottom: 44, left: 190 };
+export const MARGIN = { top: 120, right: 2, bottom: 40, left: 200 };
 const COLORS = {
   ink: "#172c46",
   muted: "#536579",
