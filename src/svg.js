@@ -168,14 +168,33 @@ export class Track {
 
   /** @param {RenderItem} item @returns {boolean} */
   canAccept(item) {
-    return this.end <= item.start;
+    return this.items.every(
+      (existing) =>
+        existing.end <= item.start || item.end <= existing.start,
+    );
+  }
+
+  /** @param {RenderItem[]} items @returns {boolean} */
+  canAcceptAll(items) {
+    return (
+      items.every((item) => this.canAccept(item)) &&
+      items.every((item, index) =>
+        items
+          .slice(index + 1)
+          .every(
+            (other) =>
+              other.end <= item.start || item.end <= other.start,
+          ),
+      )
+    );
   }
 
   /** @param {RenderItem} item */
   add(item) {
     if (!this.canAccept(item)) throw new RangeError("Track items overlap.");
     this.items.push(item);
-    this.end = item.end;
+    this.items.sort((left, right) => left.start - right.start);
+    this.end = Math.max(this.end, item.end);
   }
 
   get height() {
@@ -190,7 +209,46 @@ function assignTracks(items) {
   const ordered = [...items].sort(
     (left, right) => left.start - right.start || left.end - right.end,
   );
+
+  const linkedIds = new Set();
+  const successorById = new Map();
   for (const item of ordered) {
+    if (item.source.beforeItem === undefined) continue;
+    linkedIds.add(item.source.id);
+    linkedIds.add(item.source.beforeItem);
+    successorById.set(item.source.beforeItem, item);
+  }
+
+  const chains = ordered
+    .filter(
+      (item) =>
+        linkedIds.has(item.source.id) &&
+        item.source.beforeItem === undefined,
+    )
+    .map((root) => {
+      const chain = [];
+      let current = root;
+      while (current) {
+        chain.push(current);
+        current = successorById.get(current.source.id);
+      }
+      return chain;
+    })
+    .sort((left, right) => left[0].start - right[0].start);
+
+  const assignedIds = new Set();
+  for (const chain of chains) {
+    const track = tracks.find((candidate) => candidate.canAcceptAll(chain));
+    const target = track ?? new Track();
+    if (!track) tracks.push(target);
+    for (const item of chain) {
+      target.add(item);
+      assignedIds.add(item.source.id);
+    }
+  }
+
+  for (const item of ordered) {
+    if (assignedIds.has(item.source.id)) continue;
     let track = tracks.find((candidate) => candidate.canAccept(item));
     if (!track) {
       track = new Track();
@@ -198,6 +256,7 @@ function assignTracks(items) {
     }
     track.add(item);
   }
+
   return tracks;
 }
 

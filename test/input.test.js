@@ -265,6 +265,12 @@ describe('MatrixItem.from', () => {
     assert.equal(item.color, '#AABBCC');
   });
 
+  test('keeps the before-item reference', () => {
+    const item = MatrixItem.from('items[0]', validItem({ 'before-item': 'previous' }));
+
+    assert.equal(item.beforeItem, 'previous');
+  });
+
   for (const [name, source] of [
     ['null', null],
     ['string', 'text'],
@@ -338,6 +344,82 @@ describe('buildMatrixItemList', () => {
     assert.equal(items.length, 1);
   });
 
+  test('accepts a chain of non-overlapping items in the same lane', () => {
+    const items = buildMatrixItemList(
+      'items',
+      [
+        validItem({ id: 'a', from: 'Plan', to: 'Plan' }),
+        validItem({ id: 'b', from: 'Doing', to: 'Doing', 'before-item': 'a' }),
+        validItem({ id: 'c', from: 'Done', to: 'Done', 'before-item': 'b' }),
+      ],
+      xAxes(),
+      yAxes(),
+    );
+
+    assert.deepEqual(items.map(({ beforeItem }) => beforeItem), [undefined, 'a', 'b']);
+  });
+
+  const relationCases = [
+    [
+      'unknown target',
+      [validItem({ 'before-item': 'missing' })],
+      'validation.itemRelation.notFound',
+    ],
+    [
+      'different lane',
+      [
+        validItem({ id: 'a', from: 'Plan', to: 'Plan' }),
+        validItem({
+          id: 'b',
+          lane: 'Data',
+          from: 'Doing',
+          to: 'Doing',
+          'before-item': 'a',
+        }),
+      ],
+      'validation.itemRelation.differentLane',
+    ],
+    [
+      'overlapping X-axis ranges',
+      [
+        validItem({ id: 'a', from: 'Plan', to: 'Doing' }),
+        validItem({ id: 'b', from: 'Doing', to: 'Done', 'before-item': 'a' }),
+      ],
+      'validation.itemRelation.overlap',
+    ],
+    [
+      'target to the right',
+      [
+        validItem({ id: 'a', from: 'Doing', to: 'Doing' }),
+        validItem({ id: 'b', from: 'Plan', to: 'Plan', 'before-item': 'a' }),
+      ],
+      'validation.itemRelation.targetToRight',
+    ],
+    [
+      'multiple items referencing the same target',
+      [
+        validItem({ id: 'a', from: 'Plan', to: 'Plan' }),
+        validItem({ id: 'b', from: 'Doing', to: 'Doing', 'before-item': 'a' }),
+        validItem({ id: 'c', from: 'Done', to: 'Done', 'before-item': 'a' }),
+      ],
+      'validation.itemRelation.duplicateTarget',
+    ],
+    [
+      'self reference',
+      [validItem({ 'before-item': 'a' })],
+      'validation.itemRelation.overlap',
+    ],
+  ];
+
+  for (const [name, source, messageId] of relationCases) {
+    test(`rejects ${name}`, () => {
+      assertValidationError(
+        () => buildMatrixItemList('items', source, xAxes(), yAxes()),
+        messageId,
+      );
+    });
+  }
+
   const cases = [
     ['empty list', [], 'validation.notEmpty'],
     ['not an array', 'text', 'validation.notEmpty'],
@@ -374,7 +456,7 @@ describe('loadInput', () => {
     assert.ok(definition instanceof MatrixDefinition);
     assert.equal(definition.title, 'Full feature regression');
     assert.equal(definition.width, 800);
-    assert.equal(definition.items.length, 3);
+    assert.equal(definition.items.length, 4);
   });
 
   test('rejects a missing file', async () => {

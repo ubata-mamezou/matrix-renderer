@@ -35,3 +35,9 @@ items: # プロットするアイテムの設定
     lane: Data
     from: Doing
     to: Review
+    before-item: data-foundation # data-foundationの右側に配置
+  - id: data-foundation
+    label: Data foundation
+    lane: Data
+    from: Plan
+    to: Plan

@@ -3,11 +3,13 @@ width: 1000
 xAxis:
   label: 開発フェーズ
   values:
-    - label: 要件定義・計画
+    - label: 方向づけ
       color: "#e8f8f5"
-    - label: 設計・ビルド
+    - label: 設計
       color: "#eaf2f8"
-    - label: テスト・検証
+    - label: 構築
+      color: "#fef9e7"
+    - label: テスト
       color: "#ebf5fb"
     - label: デプロイ
       color: "#f4ecf7"
@@ -16,7 +18,7 @@ xAxis:
 yAxis:
   label: テクノロジースタック
   values:
-    - label: アプリケーション開発
+    - label: アプリケーション
       color: "#fdfefe"
     - label: インフラ・CI/CD
       color: "#fdfefe"
@@ -25,27 +27,27 @@ yAxis:
 items:
   - id: git-guide
     label: GitHub・Git利用規約ガイド
-    lane: アプリケーション開発
-    from: 要件定義・計画
-    to: 設計・ビルド
+    lane: アプリケーション
+    from: 方向づけ
+    to: 設計
     url: https://your-wiki.internal
     color: "#2471a3"
   - id: sonar-qube
     label: SonarQube（静的解析コードレビュー）
     lane: セキュリティ・品質
-    from: 設計・ビルド
-    to: テスト・検証
+    from: 設計
+    to: テスト
     url: https://internal.net
     color: "#e67e22"
   - id: play-wright
-    label: Playwright（E2E自動テスト実行環境）
+    label: Playwright（E2E）
     lane: セキュリティ・品質
-    from: テスト・検証
-    to: テスト・検証
+    from: テスト
+    to: テスト
     url: https://your-wiki.internal
     color: "#cb4335"
-  - id: argo-cd
-    label: ArgoCD（本番環境デプロイフロー）
+  - id: github-actions
+    label: GitHub Actions（CI/CD）
     lane: インフラ・CI/CD
     from: デプロイ
     to: デプロイ

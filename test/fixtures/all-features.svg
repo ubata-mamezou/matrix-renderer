@@ -39,6 +39,10 @@
 <rect x="204" y="209" width="440.5" height="34" rx="3" fill="#aabbcc" stroke="#7a8793"/>
 <text x="424.25" y="231.5" class="bar-label" text-anchor="middle" style="fill:#172c46">Overlapping guide</text>
 </g>
+<g data-item-id="data-foundation">
+<rect x="204" y="275" width="141.5" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
+<text x="274.75" y="297.5" class="bar-label" text-anchor="middle" style="fill:#172c46">Data foundation</text>
+</g>
 <g data-item-id="data-tool">
 <rect x="353.5" y="275" width="291" height="34" rx="3" fill="#d9eafa" stroke="#2872aa"/>
 <text x="499" y="297.5" class="bar-label" text-anchor="middle" style="fill:#172c46">Data tool</text>

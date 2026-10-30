@@ -39,6 +39,13 @@ export default {
     hasAttribute: "{label} attribute does not exist",
     duplicate: "{label} is duplicated: {value}",
     notInList: "{label} is not in list: {value}",
+    itemRelation: {
+      notFound: "Item {item} references a non-existent before-item: {target}",
+      differentLane: "Item {item} and its before-item {target} must use the same lane",
+      overlap: "Item {item} and its before-item {target} must not overlap on the X axis",
+      targetToRight: "Item {target} is to the right of item {item}",
+      duplicateTarget: "Multiple items specify item {target} as before-item",
+    },
     order:
       'Please specify a value for "from" that precedes the value for "to": {from}, {to}',
   },

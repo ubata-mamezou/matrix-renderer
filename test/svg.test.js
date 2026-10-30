@@ -67,6 +67,14 @@ describe('Track', () => {
     assert.throws(() => track.add(renderItem(1, 3)), RangeError);
   });
 
+  test('accepts items in an available gap', () => {
+    const track = new Track();
+    track.add(renderItem(0, 1));
+    track.add(renderItem(2, 3));
+
+    assert.equal(track.canAccept(renderItem(1, 2)), true);
+  });
+
   test('derives height from its tallest item with a minimum height', () => {
     const track = new Track();
 
@@ -173,6 +181,26 @@ describe('renderSvg', () => {
 
     assert.notEqual(barY('a'), barY('b'));
     assert.equal(barY('c'), barY('d'));
+  });
+
+  test('keeps linked chains together and places unlinked items afterward', () => {
+    const source = definition({
+      items: [
+        { id: 'a', label: 'A', lane: 'Ops', from: 'Plan', to: 'Plan' },
+        { id: 'b', label: 'B', lane: 'Ops', from: 'Doing', to: 'Doing', 'before-item': 'a' },
+        { id: 'c', label: 'C', lane: 'Ops', from: 'Done', to: 'Done', 'before-item': 'b' },
+        { id: 'unlinked', label: 'Unlinked', lane: 'Ops', from: 'Done', to: 'Done' },
+      ],
+    });
+    const { svg } = renderSvg(source);
+    const barY = (id) => {
+      const group = svg.split(`<g data-item-id="${id}">`)[1].split('</g>')[0];
+      return Number(group.match(/<rect x="[\d.]+" y="([\d.]+)"/)[1]);
+    };
+
+    assert.equal(barY('a'), barY('b'));
+    assert.equal(barY('b'), barY('c'));
+    assert.notEqual(barY('c'), barY('unlinked'));
   });
 
   test('uses the tallest wrapped item to size its track and lane', () => {

@@ -38,7 +38,7 @@ matrix-rendererは、プレーンなYAMLテキストをGitで管理するだけ�
 * イメージ幅
 * X軸のラベル、テキスト、色
 * Y軸のラベル、テキスト、色
-* プロットするアイテムのテキスト、配置行、X軸に対応した幅指定、色、URL
+* プロットするアイテムのテキスト、配置行、X軸に対応した幅指定、色、URL、アイテム間の前後関係
 
 ## ✨ Key Features / 主な特徴
 
@@ -179,6 +179,12 @@ items: # プロットするアイテムの設定
     to: 列１ # アイテムを配置する終了列（X軸のラベルを指定）
     url: https://example.com/guide # アイテムのリンク　※任意
     color: "#245080" # アイテムの色（RGBまたはRRGGBB形式）　※任意
+  - id: item2
+    label: アイテム２
+    lane: 行１
+    from: 列２
+    to: 列２
+    before-item: item1 # item1の右側に配置　※任意
 ```
 * X軸
   * 描画順: xAxis.valuesに定義された順に描画します
@@ -187,8 +193,27 @@ items: # プロットするアイテムの設定
 * アイテム
   * from, to: アイテムの描画範囲。fromはtoより左にあたるラベルまたは同値でなければいけません。
   * URL: アイテムに埋め込みます。クリックすると新しいタブで開きます。（HTTPまたはHTTPS）※SVGのみ
+  * before-item: 同じY軸でX軸範囲が重ならない左側のアイテムIDを指定します。
+    * リンクされたアイテムは同じトラックに配置され、未指定アイテムはその後に空き領域へ自動配置されます。
+    * 前後関係に指定可能な値
+      * 別Y軸のアイテムが指定されている場合はエラー
+      * X軸が被っている（item.from, to）アイテムが指定されている場合はエラー
+      * X軸が自アイテムより、右に位置するアイテムを指定している場合はエラー
+      * 複数のアイテムから、同じアイテムに対して前後関係を指定している場合はエラー（item2がitem1、item3もitem1を指定している場合はエラー）
+      * 連鎖指定は可（item2がitem1、item3がitem2というような指定はOK）
+      * 存在しないアイテムを指定している場合はエラー
 
 ## 🛠️ Sample / サンプル
 
-[`examples/`](examples/)に入力ファイル、  
-[`output/`](output/)に生成したイメージファイルを格納しています。
+[`examples/`](examples/)に入力ファイル、[`output/`](output/)に生成したイメージファイルを格納しています。
+
+|サンプル名|サンプル|備考|
+|---|---|---|
+|年間イベントの開催・実施時期（月単位）|[YAML](examples/annual-events.yaml)　[PNG](output/annual-events.png)　[SVG](output/annual-events.svg)||
+|CNCF Landscape ピックアップ|[YAML](examples/cncf-landscape.yaml)　[PNG](output/cncf-landscape.png)　[SVG](output/cncf-landscape.svg)||
+|障害対応で参照する手順・ツール|[YAML](examples/incident-response.yaml)　[PNG](output/incident-response.png)　[SVG](output/incident-response.svg)||
+|開発フェーズ|[YAML](examples/landscape.yaml)　[PNG](output/landscape.png)　[SVG](output/landscape.svg)||
+|花粉濃度の季節傾向|[YAML](examples/pollen-seasons.yaml)　[PNG](output/pollen-seasons.png)　[SVG](output/pollen-seasons.svg)||
+|プロジェクト管理ツール開発ロードマップ|[YAML](examples/project-management-roadmap.yaml)　[PNG](output/project-management-roadmap.png)　[SVG](output/project-management-roadmap.svg)|before-itemの指定例|
+|旬の食材カレンダー|[YAML](examples/seasonal-produce.yaml)　[PNG](output/seasonal-produce.png)　[SVG](output/seasonal-produce.svg)||
+|社内標準テクノロジー・カタログ|[YAML](examples/technology-radar.yaml)　[PNG](output/technology-radar.png)　[SVG](output/technology-radar.svg)||

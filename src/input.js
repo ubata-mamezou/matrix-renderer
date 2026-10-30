@@ -168,8 +168,58 @@ export const buildMatrixItemList = (messageLabel, source, xAxes, yAxes) => {
     assert.array.order(xAxisLabels, item.from, item.to);
     items.push(mi);
   }
+  validateItemRelations(items, xAxes.values);
   return items;
 };
+
+/**
+ * アイテムリンクが参照するアイテムと配置条件を検証する。
+ * @param {MatrixItem[]} items
+ * @param {AxisValue[]} xAxisValues
+ */
+function validateItemRelations(items, xAxisValues) {
+  const itemsById = new Map(items.map((item) => [item.id, item]));
+  const xAxisIndex = new Map(
+    xAxisValues.map(({ label }, index) => [label, index]),
+  );
+  const linkedFrom = new Set();
+
+  for (const item of items) {
+    if (item.beforeItem === undefined) continue;
+
+    const target = itemsById.get(item.beforeItem);
+    if (!target)
+      throwErr.validate("validation.itemRelation.notFound", {
+        item: item.id,
+        target: item.beforeItem,
+      });
+    if (target.lane !== item.lane)
+      throwErr.validate("validation.itemRelation.differentLane", {
+        item: item.id,
+        target: target.id,
+      });
+
+    const itemStart = xAxisIndex.get(item.from);
+    const itemEnd = xAxisIndex.get(item.to) + 1;
+    const targetStart = xAxisIndex.get(target.from);
+    const targetEnd = xAxisIndex.get(target.to) + 1;
+    if (itemStart < targetEnd && targetStart < itemEnd)
+      throwErr.validate("validation.itemRelation.overlap", {
+        item: item.id,
+        target: target.id,
+      });
+    if (itemEnd <= targetStart)
+      throwErr.validate("validation.itemRelation.targetToRight", {
+        item: item.id,
+        target: target.id,
+      });
+    if (linkedFrom.has(target.id))
+      throwErr.validate("validation.itemRelation.duplicateTarget", {
+        target: target.id,
+      });
+    linkedFrom.add(target.id);
+  }
+}
 
 /**
  * @param {Array<MatrixItem>} source
@@ -191,8 +241,18 @@ export class MatrixItem {
    * @property {string} to 描画区間の終了フェーズ
    * @property {string | undefined} [color] カラー
    * @property {string | undefined} [url] リンク
+   * @property {string | undefined} [beforeItem] 左側に配置するアイテムID
    */
-  constructor(id, label, lane, from, to, color = undefined, url = undefined) {
+  constructor(
+    id,
+    label,
+    lane,
+    from,
+    to,
+    color = undefined,
+    url = undefined,
+    beforeItem = undefined,
+  ) {
     this.id = id;
     this.label = label;
     this.lane = lane;
@@ -200,6 +260,7 @@ export class MatrixItem {
     this.to = to;
     this.color = color;
     this.url = url;
+    this.beforeItem = beforeItem;
   }
 
   /**
@@ -222,6 +283,8 @@ export class MatrixItem {
     } else {
       assert.type.invalid(`${messageLabel}.color`, source.color);
     }
+    if (is.type.valid(source["before-item"]))
+      assert.notEmpty.string(`${messageLabel}.before-item`, source["before-item"]);
 
     return new MatrixItem(
       source.id,
@@ -231,6 +294,7 @@ export class MatrixItem {
       source.to,
       source.color,
       source.url,
+      source["before-item"] ?? undefined,
     );
   }
 }

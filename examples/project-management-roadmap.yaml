@@ -1,0 +1,195 @@
+title: プロジェクト管理ツール開発ロードマップ
+width: 1200
+xAxis:
+  label: 開発時期（月単位）
+  values:
+    - 2026/1
+    - 2026/2
+    - 2026/3
+    - 2026/4
+    - 2026/5
+    - 2026/6
+    - 2026/7
+    - 2026/8
+    - 2026/9
+    - 2026/10
+    - 2026/11
+    - 2026/12
+    - 2027/1
+    - 2027/2
+    - 2027/3
+    - 2027/4
+    - 2027/5
+    - 2027/6
+    - 2027/7
+yAxis:
+  label: 開発タスク
+  values:
+    - label: 方向づけ
+      color: "#d6eaf8"
+    - label: トップページ
+      color: "#d5f5e3"
+    - label: メンバー管理
+      color: "#d5f5e3"
+    - label: システム設定
+      color: "#d5f5e3"
+    - label: タスク管理
+      color: "#d5f5e3"
+    - label: スケジュール
+      color: "#d5f5e3"
+    - label: プロジェクト管理
+      color: "#d5f5e3"
+    - label: 移行
+      color: "#fcf3cf"
+items:
+  - id: requirements-definition
+    label: 要件定義
+    lane: 方向づけ
+    from: 2026/1
+    to: 2026/3
+    color: "#2874a6"
+
+  - id: homepage-design
+    label: 設計
+    lane: トップページ
+    from: 2026/3
+    to: 2026/3
+    color: "#239b56"
+  - id: homepage-implementation
+    label: 実装・単体テスト
+    lane: トップページ
+    from: 2026/4
+    to: 2026/5
+    before-item: homepage-design
+    color: "#239b56"
+  - id: homepage-integration-test
+    label: 結合テスト
+    lane: トップページ
+    from: 2026/6
+    to: 2026/6
+    before-item: homepage-implementation
+    color: "#239b56"
+
+  - id: member-management-design
+    label: 設計
+    lane: メンバー管理
+    from: 2026/7
+    to: 2026/7
+    color: "#239b56"
+  - id: member-management-implementation
+    label: 実装・単体テスト
+    lane: メンバー管理
+    from: 2026/8
+    to: 2026/9
+    before-item: member-management-design
+    color: "#239b56"
+  - id: member-management-integration-test
+    label: 結合テスト
+    lane: メンバー管理
+    from: 2026/10
+    to: 2026/10
+    before-item: member-management-implementation
+    color: "#239b56"
+
+  - id: project-management-design
+    label: 設計
+    lane: システム設定
+    from: 2026/11
+    to: 2026/11
+    color: "#239b56"
+  - id: project-management-implementation
+    label: 実装・単体テスト
+    lane: システム設定
+    from: 2026/12
+    to: 2027/1
+    before-item: project-management-design
+    color: "#239b56"
+  - id: project-management-integration-test
+    label: 結合テスト
+    lane: システム設定
+    from: 2027/2
+    to: 2027/2
+    before-item: project-management-implementation
+    color: "#239b56"
+
+  - id: task-management-design
+    label: 設計
+    lane: タスク管理
+    from: 2026/3
+    to: 2026/3
+    color: "#239b56"
+  - id: task-management-implementation
+    label: 実装・単体テスト
+    lane: タスク管理
+    from: 2026/4
+    to: 2026/5
+    before-item: task-management-design
+    color: "#239b56"
+  - id: task-management-integration-test
+    label: 結合テスト
+    lane: タスク管理
+    from: 2026/6
+    to: 2026/6
+    before-item: task-management-implementation
+    color: "#239b56"
+
+  - id: schedule-design
+    label: 設計
+    lane: スケジュール
+    from: 2026/7
+    to: 2026/7
+    color: "#239b56"
+  - id: schedule-implementation
+    label: 実装・単体テスト
+    lane: スケジュール
+    from: 2026/8
+    to: 2026/9
+    before-item: schedule-design
+    color: "#239b56"
+  - id: schedule-integration-test
+    label: 結合テスト
+    lane: スケジュール
+    from: 2026/10
+    to: 2026/10
+    before-item: schedule-implementation
+    color: "#239b56"
+
+  - id: project-management-design
+    label: 設計
+    lane: プロジェクト管理
+    from: 2026/11
+    to: 2026/11
+    color: "#239b56"
+  - id: project-management-implementation
+    label: 実装・単体テスト
+    lane: プロジェクト管理
+    from: 2026/12     
+    to: 2027/1
+    before-item: project-management-design
+    color: "#239b56"
+  - id: project-management-integration-test
+    label: 結合テスト
+    lane: プロジェクト管理
+    from: 2027/2
+    to: 2027/2
+    before-item: project-management-implementation
+    color: "#239b56"
+
+  - id: system-test
+    label: システムテスト
+    lane: 移行
+    from: 2027/3
+    to: 2027/4
+    color: "#d4ac0d"
+  - id: user-acceptance-test
+    label: ユーザー受入テスト
+    lane: 移行
+    from: 2027/5
+    to: 2027/6
+    color: "#884ea0"
+  - id: migration
+    label: 本番移行
+    lane: 移行
+    from: 2027/7
+    to: 2027/7
+    color: "#c0392b"

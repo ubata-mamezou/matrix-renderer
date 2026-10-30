@@ -39,6 +39,13 @@ export default {
     hasAttribute: "{label} 属性が存在しません",
     duplicate: "{label} が重複しています: {value}",
     notInList: "{label} が一覧に存在しません: {value}",
+    itemRelation: {
+      notFound: "アイテム {item} の before-item に存在しないIDが指定されています: {target}",
+      differentLane: "アイテム {item} と before-item のアイテム {target} は同じY軸を指定してください",
+      overlap: "アイテム {item} と before-item のアイテム {target} のX軸範囲が重複しています",
+      targetToRight: "アイテム {target} はアイテム {item} より右側にあります",
+      duplicateTarget: "複数のアイテムが同じアイテム {target} を before-item に指定しています",
+    },
     order:
       '"from" には "to" より前の値を指定してください: {from}, {to}',
   },
