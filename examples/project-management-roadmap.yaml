@@ -91,25 +91,25 @@ items:
     before-item: member-management-implementation
     color: "#239b56"
 
-  - id: project-management-design
+  - id: system-setting
     label: 設計
     lane: システム設定
     from: 2026/11
     to: 2026/11
     color: "#239b56"
-  - id: project-management-implementation
+  - id: system-setting-implementation
     label: 実装・単体テスト
     lane: システム設定
     from: 2026/12
     to: 2027/1
-    before-item: project-management-design
+    before-item: system-setting
     color: "#239b56"
-  - id: project-management-integration-test
+  - id: system-setting-integration-test
     label: 結合テスト
     lane: システム設定
     from: 2027/2
     to: 2027/2
-    before-item: project-management-implementation
+    before-item: system-setting-implementation
     color: "#239b56"
 
   - id: task-management-design
