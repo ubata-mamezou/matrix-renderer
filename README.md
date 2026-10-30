@@ -162,14 +162,14 @@ xAxis: # X軸
   values: # X軸の設定
     - label: 列１ # X軸のラベル
       color: "#d6eaf8" # 列の色（RGBまたはRRGGBB形式）　※任意
-    - label: 列２ # X軸のラベル（色指定なし）
+    - 列２ # X軸のラベル（色指定なし）
     - label: 列３ # X軸のラベル（色指定なし、属性名あり）
 yAxis: # Y軸
   label: Y軸の説明 # Y軸のラベル
   values: # Y軸の設定
     - label: 行１ # Y軸のラベル
       color: "#c5e4ec" # 行の色（RGBまたはRRGGBB形式）　※任意
-    - label: 行２ # Y軸のラベル（色指定なし）
+    - 行２ # Y軸のラベル（色指定なし）
     - label: 行３ # Y軸のラベル（色指定なし、属性名あり）
 items: # プロットするアイテムの設定
   - id: item1 # アイテムのID
