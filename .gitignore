@@ -1,5 +1,4 @@
 node_modules/
 .vscode/settings.json
 test-behavior/
-assets/spec.drawio.png
-specs/item-relation.md
+specs

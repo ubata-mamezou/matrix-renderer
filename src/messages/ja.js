@@ -48,6 +48,9 @@ export default {
     },
     order:
       '"from" には "to" より前の値を指定してください: {from}, {to}',
+    axis: {
+      depth: "{label} の階層数は最大 {maxDepth} 階層です",
+    },
   },
   url: {
     badValue: "URLに変換できない値です。",

@@ -64,6 +64,23 @@ describe('MatrixDefinition.from', () => {
     assert.equal(definition.items[1].url, 'https://example.com');
   });
 
+  test('keeps an optional global line color', () => {
+    assert.equal(
+      MatrixDefinition.from({ ...validSource(), lineColor: '#789abc' }).lineColor,
+      '#789abc',
+    );
+    assert.equal(MatrixDefinition.from(validSource()).lineColor, undefined);
+  });
+
+  for (const lineColor of ['red', '#12', '#1234', '#ggg', 123]) {
+    test(`rejects invalid line color ${String(lineColor)}`, () => {
+      assertValidationError(
+        () => MatrixDefinition.from({ ...validSource(), lineColor }),
+        'validation.format.rgb',
+      );
+    });
+  }
+
   test('uses defaults when title and width are omitted', () => {
     const source = validSource();
     delete source.title;
@@ -180,6 +197,117 @@ describe('AxisDefinition.from', () => {
     );
   });
 
+  test('builds nested values and flattens leaf values in display order', () => {
+    const axis = AxisDefinition.from('xAxis', {
+      label: 'Phase',
+      values: [
+        {
+          label: 'Plan',
+          'sub-labels': [
+            {
+              label: 'Define',
+              'sub-labels': ['Scope', 'Requirements'],
+            },
+            'Review',
+          ],
+        },
+        'Done',
+      ],
+    });
+
+    assert.equal(axis.maxDepth, 3);
+    assert.deepEqual(axis.leafValues.map(({ label }) => label), [
+      'Scope',
+      'Requirements',
+      'Review',
+      'Done',
+    ]);
+    assert.deepEqual(
+      axis.values[0].subValues[0].subValues.map(({ label }) => label),
+      ['Scope', 'Requirements'],
+    );
+  });
+
+  test('inherits colors from parents unless a child overrides them', () => {
+    const axis = AxisDefinition.from('xAxis', {
+      label: 'Phase',
+      values: [
+        {
+          label: 'Plan',
+          color: '#abc',
+          'sub-labels': [
+            'Define',
+            {
+              label: 'Review',
+              color: '#123456',
+              'sub-labels': ['Approve'],
+            },
+          ],
+        },
+        { label: 'Done', 'sub-labels': ['Release'] },
+      ],
+    });
+
+    assert.deepEqual(
+      [
+        axis.values[0].color,
+        axis.values[0].subValues[0].color,
+        axis.values[0].subValues[1].color,
+        axis.values[0].subValues[1].subValues[0].color,
+        axis.values[1].color,
+        axis.values[1].subValues[0].color,
+      ],
+      ['#abc', '#abc', '#123456', '#123456', undefined, undefined],
+    );
+  });
+
+  test('treats empty sub-labels as an un-nested value', () => {
+    const axis = AxisDefinition.from('xAxis', {
+      label: 'Phase',
+      values: [{ label: 'Plan', 'sub-labels': [] }],
+    });
+
+    assert.equal(axis.maxDepth, 1);
+    assert.deepEqual(axis.leafValues.map(({ label }) => label), ['Plan']);
+  });
+
+  test('rejects duplicate labels across different levels', () => {
+    assertValidationError(
+      () =>
+        AxisDefinition.from('xAxis', {
+          label: 'Phase',
+          values: [{ label: 'Plan', 'sub-labels': ['Plan'] }],
+        }),
+      'validation.array.uniqueBy',
+    );
+  });
+
+  test('rejects nesting deeper than three levels', () => {
+    assertValidationError(
+      () =>
+        AxisDefinition.from('xAxis', {
+          label: 'Phase',
+          values: [
+            {
+              label: 'Level 1',
+              'sub-labels': [
+                {
+                  label: 'Level 2',
+                  'sub-labels': [
+                    {
+                      label: 'Level 3',
+                      'sub-labels': ['Level 4'],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        }),
+      'validation.axis.depth',
+    );
+  });
+
   const cases = [
     ['undefined', undefined, 'validation.type.valid'],
     ['null', null, 'validation.type.valid'],
@@ -193,6 +321,7 @@ describe('AxisDefinition.from', () => {
     ['value object without label', { label: 'x', values: [{ color: '#abc' }] }, 'validation.notEmpty'],
     ['numeric value', { label: 'x', values: [1] }, 'validation.type.object'],
     ['invalid color', { label: 'x', values: [{ label: 'a', color: 'red' }] }, 'validation.format.rgb'],
+    ['sub-labels is not an array', { label: 'x', values: [{ label: 'a', 'sub-labels': 'b' }] }, 'validation.type.array'],
     ['duplicate labels (string)', { label: 'x', values: ['a', 'a'] }, 'validation.array.uniqueBy'],
     ['duplicate labels (mixed)', { label: 'x', values: ['a', { label: 'a' }] }, 'validation.array.uniqueBy'],
   ];
@@ -344,6 +473,48 @@ describe('buildMatrixItemList', () => {
     assert.equal(items.length, 1);
   });
 
+  test('uses nested leaf labels for item ranges and lanes', () => {
+    const nestedXAxes = AxisDefinition.from('xAxis', {
+      label: 'Phase',
+      values: [{ label: 'Plan', 'sub-labels': ['Define', 'Review'] }, 'Done'],
+    });
+    const nestedYAxes = AxisDefinition.from('yAxis', {
+      label: 'Category',
+      values: [{ label: 'Operations', 'sub-labels': ['Incident', 'Change'] }],
+    });
+
+    const items = buildMatrixItemList(
+      'items',
+      [validItem({ lane: 'Incident', from: 'Define', to: 'Review' })],
+      nestedXAxes,
+      nestedYAxes,
+    );
+
+    assert.equal(items.length, 1);
+  });
+
+  test('rejects parent labels as item coordinates', () => {
+    const nestedXAxes = AxisDefinition.from('xAxis', {
+      label: 'Phase',
+      values: [{ label: 'Plan', 'sub-labels': ['Define', 'Review'] }],
+    });
+    const nestedYAxes = AxisDefinition.from('yAxis', {
+      label: 'Category',
+      values: [{ label: 'Operations', 'sub-labels': ['Incident'] }],
+    });
+
+    assertValidationError(
+      () =>
+        buildMatrixItemList(
+          'items',
+          [validItem({ lane: 'Operations', from: 'Plan', to: 'Plan' })],
+          nestedXAxes,
+          nestedYAxes,
+        ),
+      'validation.notInList',
+    );
+  });
+
   test('accepts a chain of non-overlapping items in the same lane', () => {
     const items = buildMatrixItemList(
       'items',
@@ -457,6 +628,41 @@ describe('loadInput', () => {
     assert.equal(definition.title, 'Full feature regression');
     assert.equal(definition.width, 800);
     assert.equal(definition.items.length, 4);
+  });
+
+  test('loads nested axis values from YAML', async () => {
+    const path = join(directory, 'nested.yaml');
+    await writeFile(
+      path,
+      `title: nested
+xAxis:
+  label: Phase
+  values:
+    - label: Plan
+      sub-labels: [Define, Review]
+yAxis:
+  label: Category
+  values:
+    - label: Operations
+      sub-labels: [Incident]
+items:
+  - id: guide
+    label: Guide
+    lane: Incident
+    from: Define
+    to: Review
+`,
+    );
+
+    const definition = await loadInput(path);
+
+    assert.deepEqual(definition.xAxes.leafValues.map(({ label }) => label), [
+      'Define',
+      'Review',
+    ]);
+    assert.deepEqual(definition.yAxes.leafValues.map(({ label }) => label), [
+      'Incident',
+    ]);
   });
 
   test('rejects a missing file', async () => {

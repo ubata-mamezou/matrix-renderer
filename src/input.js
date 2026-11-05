@@ -4,6 +4,68 @@ import { toUrl } from "./adapter/web/url.js";
 import { throwErr } from "./errors/error.js";
 import { assert, is } from "./validation/validator.js";
 
+const MAX_AXIS_DEPTH = 3;
+
+/** @param {AxisValue[]} values @returns {AxisValue[]} */
+const flattenAxisValues = (values) =>
+  values.flatMap((value) => [value, ...flattenAxisValues(value.subValues)]);
+
+/** @param {AxisValue[]} values @returns {AxisValue[]} */
+const flattenAxisLeaves = (values) =>
+  values.flatMap((value) =>
+    value.subValues.length > 0
+      ? flattenAxisLeaves(value.subValues)
+      : [value],
+  );
+
+/** @param {AxisValue[]} values @returns {number} */
+const getAxisDepth = (values) =>
+  values.length === 0
+    ? 0
+    : Math.max(...values.map((value) => 1 + getAxisDepth(value.subValues)));
+
+/**
+ * @param {string} messageLabel
+ * @param {Array<string | object>} source
+ * @param {number} depth
+ * @param {string | undefined} inheritedColor
+ * @returns {AxisValue[]}
+ */
+function parseAxisValues(
+  messageLabel,
+  source,
+  depth = 1,
+  inheritedColor = undefined,
+) {
+  return source.map((value, index) => {
+    const valueLabel = `${messageLabel}[${index}]`;
+    if (is.type.string(value))
+      return AxisValue.from(valueLabel, value, inheritedColor);
+
+    assert.type.object(valueLabel, value);
+    const color = value.color ?? inheritedColor;
+    const subLabels = value["sub-labels"];
+    let subValues = [];
+    if (is.type.valid(subLabels)) {
+      assert.type.array(`${valueLabel}.sub-labels`, subLabels);
+      if (subLabels.length > 0) {
+        if (depth >= MAX_AXIS_DEPTH)
+          throwErr.validate("validation.axis.depth", {
+            label: `${valueLabel}.sub-labels`,
+            maxDepth: MAX_AXIS_DEPTH,
+          });
+        subValues = parseAxisValues(
+          `${valueLabel}.sub-labels`,
+          subLabels,
+          depth + 1,
+          color,
+        );
+      }
+    }
+    return AxisValue.from(valueLabel, value.label, color, subValues);
+  });
+}
+
 /**
  * マトリクス定義
  */
@@ -20,6 +82,7 @@ export class MatrixDefinition {
    * @property {MatrixItem[]} items 描画する項目
    * @property {string | undefined} [title] マトリックスのタイトル
    * @property {number | undefined} [width] 出力画像の幅
+  * @property {string | undefined} [lineColor] 罫線の色
    */
   constructor(
     xAxes,
@@ -27,12 +90,14 @@ export class MatrixDefinition {
     items,
     title = MatrixDefinition.defaultTitle,
     width = MatrixDefinition.defaultWidth,
+    lineColor = undefined,
   ) {
     this.title = title;
     this.width = width;
     this.xAxes = xAxes;
     this.yAxes = yAxes;
     this.items = items;
+    this.lineColor = lineColor;
   }
 
   /**
@@ -54,6 +119,8 @@ export class MatrixDefinition {
         MatrixDefinition.maxWidth,
         false,
       );
+    if (is.type.valid(source.lineColor))
+      assert.format.rgb("lineColor", source.lineColor);
 
     const xAxes = AxisDefinition.from("xAxis", source.xAxis);
     const yAxes = AxisDefinition.from("yAxis", source.yAxis);
@@ -65,6 +132,7 @@ export class MatrixDefinition {
       items,
       source.title ?? MatrixDefinition.defaultTitle,
       source.width ?? MatrixDefinition.defaultWidth,
+      source.lineColor ?? undefined,
     );
   }
 }
@@ -81,6 +149,8 @@ export class AxisDefinition {
   constructor(label, values) {
     this.label = label;
     this.values = values;
+    this.leafValues = flattenAxisLeaves(values);
+    this.maxDepth = Math.max(1, getAxisDepth(values));
   }
 
   /**
@@ -94,13 +164,12 @@ export class AxisDefinition {
     assert.notEmpty.string(`${messageLabel}.label`, source.label);
     assert.notEmpty.array(`${messageLabel}.values`, source.values);
 
-    const avs = source.values.map((value, index) => {
-      const valueLabel = `${messageLabel}.values[${index}]`;
-      if (is.type.string(value)) return AxisValue.from(valueLabel, value);
-      assert.type.object(valueLabel, value);
-      return AxisValue.from(valueLabel, value.label, value.color);
-    });
-    assert.array.uniqueBy(`${messageLabel}.values`, avs, "label");
+    const avs = parseAxisValues(`${messageLabel}.values`, source.values);
+    assert.array.uniqueBy(
+      `${messageLabel}.values`,
+      flattenAxisValues(avs),
+      "label",
+    );
 
     return new AxisDefinition(source.label, avs);
   }
@@ -114,23 +183,26 @@ export class AxisValue {
    * constructor
    * @param {string} label ラベル
    * @param {string | undefined} color カラー
+   * @param {AxisValue[]} [subValues] 子ラベル
    */
-  constructor(label, color) {
+  constructor(label, color, subValues = []) {
     this.label = label;
     this.color = color;
+    this.subValues = subValues;
   }
 
   /**
    * @param {string} messageLabel メッセージ出力用ラベル
    * @param {string} label 軸の説明
    * @param {string | undefined} color カラー
+   * @param {AxisValue[]} [subValues] 子ラベル
    * @returns 軸
    */
-  static from(messageLabel, label, color = undefined) {
+  static from(messageLabel, label, color = undefined, subValues = []) {
     assert.notEmpty.string(messageLabel, label);
     if (is.type.valid(color)) assert.format.rgb(`${messageLabel}.color`, color);
 
-    return new AxisValue(label, color);
+    return new AxisValue(label, color, subValues);
   }
 }
 
@@ -144,10 +216,10 @@ export class AxisValue {
 export const buildMatrixItemList = (messageLabel, source, xAxes, yAxes) => {
   assert.notEmpty.array(messageLabel, source);
 
-  const xAxisLabels = convertMatrixItemListToLabelArray(xAxes.values);
+  const xAxisLabels = convertMatrixItemListToLabelArray(xAxes.leafValues);
   const xAxisLabelsSet = new Set(xAxisLabels);
 
-  const yAxisLabels = convertMatrixItemListToLabelArray(yAxes.values);
+  const yAxisLabels = convertMatrixItemListToLabelArray(yAxes.leafValues);
   const yAxisLabelsSet = new Set(yAxisLabels);
 
   const itemIds = new Set();
@@ -168,7 +240,7 @@ export const buildMatrixItemList = (messageLabel, source, xAxes, yAxes) => {
     assert.array.order(xAxisLabels, item.from, item.to);
     items.push(mi);
   }
-  validateItemRelations(items, xAxes.values);
+  validateItemRelations(items, xAxes.leafValues);
   return items;
 };
 

@@ -36,16 +36,24 @@ matrix-rendererは、プレーンなYAMLテキストをGitで管理するだけ�
 **指定可能な値**
 * タイトル
 * イメージ幅
-* X軸のラベル、テキスト、色
-* Y軸のラベル、テキスト、色
+* X軸のラベル、テキスト、色、段組み
+* Y軸のラベル、テキスト、色、段組み
 * プロットするアイテムのテキスト、配置行、X軸に対応した幅指定、色、URL、アイテム間の前後関係
+
+## glossary / 用語
+
+![用語説明](assets/glossary.drawio.png)
+
+* X軸: X軸方向にあたるラベルのこと。マトリクスの列に該当します。
+* Y軸: Y軸方向にあたるラベルのこと。マトリクスの行に該当します。
+* アイテム: マトリクス内に配置するボックスのこと。
+* ルートラベル: 最上部に位置するラベルのこと
+* リーフラベル: 最下部に位置するラベルのこと
 
 ## ✨ Key Features / 主な特徴
 
 * Git-Friendly (Doc as Code): マトリクス構造をYAMLで記述するため、差分（diff）が明確で、レビューやバージョン管理が容易です。
-<!--
 * CI/CD Integration Ready: GitHub ActionsなどのCIワークフローに組み込むことで、YAMLの変更を検知してイメージファイルを自動で再帰的にアップデート可能です。
--->
 * Interactive SVG: 生成されたSVG内のアイテムにはハイパーリンクを埋め込み可能。ドキュメントから詳細ページへの動線を作れます。
 
 ## Effective Usage and Important Considerations / 効果的な使い方と注意点
@@ -64,146 +72,24 @@ matrix-rendererは、プレーンなYAMLテキストをGitで管理するだけ�
 
 1. マトリクス設定ファイルを作成する
    マトリクスを作成するための設定値を定義したファイルを作成します。
-      * テンプレートは[こちら](#️-yaml-template--yaml設定テンプレート)
+      * テンプレートは[こちら](docs/ja/template.md)
       * サンプルは[こちら](#️-sample--サンプル)
 2. イメージファイルを生成する
-   用途に合う[コマンド](#-command--コマンド)を使用してイメージファイルを生成します。
+   用途に合う[コマンド](docs/ja/command.md)を使用してイメージファイルを生成します。
 
 ## ⌘ Command / コマンド
 
-イメージファイルを生成するコマンド例です。
-
-### 入力ファイルのみ指定
-
-入力ファイルと同名のイメージファイルを生成します。  
-生成先は入力ファイルと同じフォルダーになります。
+イメージファイルを生成するコマンド例です。  
+使用可能なコマンドパターンは[こちら](docs/ja/command.md)を参照してください。
 
 ```sh
-npx matrix-renderer render -- example.yaml
-```
-* 📁
-  * example.yaml
-  * example.png
-  * example.svg
-
-### 入力ファイル、出力ファイル名指定
-
-指定されたファイル名のイメージファイルを生成します。
-生成先は入力ファイルと同じフォルダーになります。
-
-```sh
-npx matrix-renderer render -- example.yaml --out rename
-```
-* 📁
-  * example.yaml
-  * rename.png
-  * rename.svg
-
-### 入力ファイル、出力ディレクトリ+ファイル名指定
-
-指定されたディレクトリ配下に、指定されたファイル名のイメージファイルを生成します。
-
-```sh
-npx matrix-renderer render -- example.yaml --out output/rename
-```
-* 📁
-  * example.yaml
-  * 📁output
-    * rename.png
-    * rename.svg
-
-### 出力タイプ指定
-
-指定されたファイルタイプを生成します。  
-pngまたはsvgを指定できます。  
-出力タイプ無指定の場合は両方出力します。
-
-```sh
-npx matrix-renderer render -- example.yaml --out output/rename --out-type svg
-```
-* 📁
-  * example.yaml
-  * 📁output
-    * rename.svg
-
-### メッセージの言語指定
-
-エラー、進捗、ヘルプの言語を切り替えます。  
-enまたはjaを指定できます。無指定や未対応の値の場合はenです。
-
-```sh
-npx matrix-renderer render -- example.yaml --lang ja
-```
-
-### ヘルプ
-
-CLIのヘルプ表示。
-
-```sh
-npx matrix-renderer render -- --help
-
-Usage:
-  matrix-renderer render -- <input.yaml> [Options]
-
-Options:
-  --out <prefix>    Output path without an extension
-  --out-type <type> Output file type (png, svg) [generates both if omitted]
-  --lang <lang>     Message language (en, ja) [default: en]
-  -h, --help        Show this help
+npx matrix-renderer render -- example.yaml --out output/rename --out-type svg --lang ja
 ```
 
 ## 🛠️ YAML template / YAML設定テンプレート
 
-```yaml
-title: テンプレートです # マトリクスタイトル
-width: 800 # マトリクスの幅　※任意（デフォルト1400）
-xAxis: # X軸
-  label: X軸の説明 # x軸のラベル
-  values: # X軸の設定
-    - label: 列１ # X軸のラベル
-      color: "#d6eaf8" # 列の色（RGBまたはRRGGBB形式）　※任意
-    - 列２ # X軸のラベル（色指定なし）
-    - label: 列３ # X軸のラベル（色指定なし、属性名あり）
-yAxis: # Y軸
-  label: Y軸の説明 # Y軸のラベル
-  values: # Y軸の設定
-    - label: 行１ # Y軸のラベル
-      color: "#c5e4ec" # 行の色（RGBまたはRRGGBB形式）　※任意
-    - 行２ # Y軸のラベル（色指定なし）
-    - label: 行３ # Y軸のラベル（色指定なし、属性名あり）
-items: # プロットするアイテムの設定
-  - id: item1 # アイテムのID
-    label: アイテム１ # アイテムのラベル
-    lane: 行１ # アイテムを配置する行（Y軸のラベルを指定）
-    from: 列１ # アイテムを配置する開始列（X軸のラベルを指定）
-    to: 列１ # アイテムを配置する終了列（X軸のラベルを指定）
-    url: https://example.com/guide # アイテムのリンク　※任意
-    color: "#245080" # アイテムの色（RGBまたはRRGGBB形式）　※任意
-  - id: item2
-    label: アイテム２
-    lane: 行１
-    from: 列２
-    to: 列２
-    before-item: item1 # item1の右側に配置　※任意
-```
-* X軸
-  * X軸方向にあたるラベルを指します。マトリクスの列に該当します。
-  * 描画順: xAxis.valuesに定義された順に描画します
-* Y軸
-  * Y軸方向にあたるラベルを指します。マトリクスの行に該当します。
-  * 描画順: yAxis.valuesに定義された順に描画します
-* アイテム
-  * from, to: アイテムの描画範囲。fromはtoより左にあたるラベルまたは同値でなければいけません。
-  * URL: アイテムに埋め込みます。クリックすると新しいタブで開きます。（HTTPまたはHTTPS）※SVGのみ
-  * before-item: 同じY軸でX軸範囲が重ならない左側のアイテムIDを指定します。
-    * リンクされたアイテムは同じトラックに配置され、未指定アイテムはその後に空き領域へ自動配置されます。
-    * 前後関係に指定可能な値
-      * 別Y軸のアイテムが指定されている場合はエラー
-      * X軸が被っている（item.from, to）アイテムが指定されている場合はエラー
-      * X軸が自アイテムより、右に位置するアイテムを指定している場合はエラー
-      * 複数のアイテムから、同じアイテムに対して前後関係を指定している場合はエラー（item2がitem1、item3もitem1を指定している場合はエラー）
-      * 連鎖指定は可（item2がitem1、item3がitem2というような指定はOK）
-      * 存在しないアイテムを指定している場合はエラー
+マトリクスの設定ファイル仕様は[こちら](docs/ja/template.md)を参照してください。
+
 
 ## 🛠️ Sample / サンプル
 

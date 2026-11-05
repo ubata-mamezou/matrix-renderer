@@ -48,6 +48,9 @@ export default {
     },
     order:
       'Please specify a value for "from" that precedes the value for "to": {from}, {to}',
+    axis: {
+      depth: "{label} exceeds the maximum axis nesting depth of {maxDepth}",
+    },
   },
   url: {
     badValue: "The value to be converted is not a URL.",

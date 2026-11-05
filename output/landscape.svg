@@ -1,61 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420">
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="550" viewBox="0 0 1000 550">
 <rect width="100%" height="100%" fill="#ffffff"/>
 <style>text{font-family:Arial,"Noto Sans JP","Yu Gothic",sans-serif;fill:#172c46}.axis{font-size:13px}.title{font-size:24px;font-weight:700}.lane-label{font-size:15px;font-weight:700}.bar-label{font-size:14px;font-weight:600}.item-link{cursor:pointer}.item-link text{text-decoration:underline}.item-link:hover rect,.item-link:focus-visible rect{fill:#c4def4;stroke:#145c91;stroke-width:2}</style>
-<text x="200" y="42" class="title">社内標準DevOpsツールチェーン &amp; 開発ガイドマップ</text>
-<text x="200" y="78" class="axis" font-weight="700">開発フェーズ</text>
+<text x="270" y="42" class="title">社内標準DevOpsツールチェーン &amp; 開発ガイドマップ</text>
+<text x="270" y="78" class="axis" font-weight="700">開発フェーズ</text>
 <text x="24" y="106" class="axis" font-weight="700">テクノロジースタック</text>
-<rect x="200" y="88" width="133" height="32" fill="#e8f8f5"/>
-<text x="266.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">方向づけ</text>
-<rect x="333" y="88" width="133" height="32" fill="#eaf2f8"/>
-<text x="399.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">設計</text>
-<rect x="466" y="88" width="133" height="32" fill="#fef9e7"/>
-<text x="532.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">構築</text>
-<rect x="599" y="88" width="133" height="32" fill="#ebf5fb"/>
-<text x="665.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">テスト</text>
-<rect x="732" y="88" width="133" height="32" fill="#f4ecf7"/>
-<text x="798.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">デプロイ</text>
-<rect x="865" y="88" width="133" height="32" fill="#fcf3cf"/>
-<text x="931.5" y="109" class="axis" text-anchor="middle" style="fill:#172c46">運用・監視</text>
+<rect x="270" y="88" width="121.33333333333333" height="32" fill="#e8f8f5"/>
+<text x="330.6666666666667" y="109" class="axis" text-anchor="middle" style="fill:#172c46">方向づけ</text>
+<rect x="391.3333333333333" y="88" width="121.33333333333333" height="32" fill="#eaf2f8"/>
+<text x="452" y="109" class="axis" text-anchor="middle" style="fill:#172c46">設計</text>
+<rect x="512.6666666666666" y="88" width="121.33333333333333" height="32" fill="#fef9e7"/>
+<text x="573.3333333333333" y="109" class="axis" text-anchor="middle" style="fill:#172c46">構築</text>
+<rect x="634" y="88" width="121.33333333333333" height="32" fill="#ebf5fb"/>
+<text x="694.6666666666666" y="109" class="axis" text-anchor="middle" style="fill:#172c46">テスト</text>
+<rect x="755.3333333333333" y="88" width="121.33333333333333" height="32" fill="#f4ecf7"/>
+<text x="815.9999999999999" y="109" class="axis" text-anchor="middle" style="fill:#172c46">デプロイ</text>
+<rect x="876.6666666666666" y="88" width="121.33333333333333" height="32" fill="#fcf3cf"/>
+<text x="937.3333333333333" y="109" class="axis" text-anchor="middle" style="fill:#172c46">運用・監視</text>
 <rect x="0" y="120" width="1000" height="66" fill="#f4f7fa"/>
-<rect x="0" y="120" width="188" height="66" fill="#fdfefe"/>
-<text x="18" y="158" class="lane-label" style="fill:#172c46">アプリケーション</text>
-<line x1="0" y1="186" x2="1000" y2="186" stroke="#d7e0e8"/>
+<line x1="270" y1="186" x2="1000" y2="186" stroke="#d7e0e8"/>
 <rect x="0" y="186" width="1000" height="72" fill="#ffffff"/>
-<rect x="0" y="186" width="188" height="72" fill="#fdfefe"/>
-<text x="18" y="227" class="lane-label" style="fill:#172c46">インフラ・CI/CD</text>
-<line x1="0" y1="258" x2="1000" y2="258" stroke="#d7e0e8"/>
-<rect x="0" y="258" width="1000" height="122" fill="#f4f7fa"/>
-<rect x="0" y="258" width="188" height="122" fill="#fdfefe"/>
-<text x="18" y="324" class="lane-label" style="fill:#172c46">セキュリティ・品質</text>
-<line x1="0" y1="380" x2="1000" y2="380" stroke="#d7e0e8"/>
-<line x1="200" y1="120" x2="200" y2="380" stroke="#d7e0e8"/>
-<line x1="333" y1="120" x2="333" y2="380" stroke="#d7e0e8"/>
-<line x1="466" y1="120" x2="466" y2="380" stroke="#d7e0e8"/>
-<line x1="599" y1="120" x2="599" y2="380" stroke="#d7e0e8"/>
-<line x1="732" y1="120" x2="732" y2="380" stroke="#d7e0e8"/>
-<line x1="865" y1="120" x2="865" y2="380" stroke="#d7e0e8"/>
-<line x1="998" y1="120" x2="998" y2="380" stroke="#d7e0e8"/>
+<line x1="270" y1="258" x2="1000" y2="258" stroke="#d7e0e8"/>
+<rect x="0" y="258" width="1000" height="58" fill="#f4f7fa"/>
+<line x1="270" y1="316" x2="1000" y2="316" stroke="#d7e0e8"/>
+<rect x="0" y="316" width="1000" height="72" fill="#ffffff"/>
+<line x1="270" y1="388" x2="1000" y2="388" stroke="#d7e0e8"/>
+<rect x="0" y="388" width="1000" height="122" fill="#f4f7fa"/>
+<line x1="270" y1="510" x2="1000" y2="510" stroke="#d7e0e8"/>
+<rect x="0" y="120" width="258" height="66" fill="#ebf1f6" stroke="#d7e0e8"/>
+<text x="129" y="159.5" class="lane-label" text-anchor="middle" style="fill:#172c46">アプリケーション</text>
+<rect x="0" y="186" width="174" height="202" fill="#ebf1f6" stroke="#d7e0e8"/>
+<text x="87" y="293.5" class="lane-label" text-anchor="middle" style="fill:#172c46">インフラストラクチャ</text>
+<rect x="174" y="186" width="84" height="72" fill="#ebf1f6" stroke="#d7e0e8"/>
+<text x="216" y="228.5" class="lane-label" text-anchor="middle" style="fill:#172c46">CI/CD</text>
+<rect x="174" y="258" width="84" height="58" fill="#ebf1f6" stroke="#d7e0e8"/>
+<text x="216" y="293.5" class="lane-label" text-anchor="middle" style="fill:#172c46">実行環境</text>
+<rect x="174" y="316" width="84" height="72" fill="#ebf1f6" stroke="#d7e0e8"/>
+<text x="216" y="358.5" class="lane-label" text-anchor="middle" style="fill:#172c46">運用監視</text>
+<rect x="0" y="388" width="258" height="122" fill="#ebf1f6" stroke="#d7e0e8"/>
+<text x="129" y="455.5" class="lane-label" text-anchor="middle" style="fill:#172c46">セキュリティ・品質</text>
+<line x1="270" y1="120" x2="270" y2="510" stroke="#d7e0e8"/>
+<line x1="391.3333333333333" y1="120" x2="391.3333333333333" y2="510" stroke="#d7e0e8"/>
+<line x1="512.6666666666666" y1="120" x2="512.6666666666666" y2="510" stroke="#d7e0e8"/>
+<line x1="634" y1="120" x2="634" y2="510" stroke="#d7e0e8"/>
+<line x1="755.3333333333333" y1="120" x2="755.3333333333333" y2="510" stroke="#d7e0e8"/>
+<line x1="876.6666666666666" y1="120" x2="876.6666666666666" y2="510" stroke="#d7e0e8"/>
+<line x1="998" y1="120" x2="998" y2="510" stroke="#d7e0e8"/>
 <g data-item-id="git-guide"><a href="https://your-wiki.internal" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="GitHub・Git利用規約ガイドを開く" class="item-link"><title>GitHub・Git利用規約ガイドを開く</title>
-<rect x="204" y="136" width="258" height="34" rx="3" fill="#2471a3" stroke="#1a5175"/>
-<text x="333" y="158.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">GitHub・Git利用規約ガイド</text>
+<rect x="274" y="136" width="234.66666666666666" height="34" rx="3" fill="#2471a3" stroke="#1a5175"/>
+<text x="391.3333333333333" y="158.5" class="bar-label" text-anchor="middle" style="fill:#ffffff">GitHub・Git利用規約ガイド</text>
 </a></g>
 <g data-item-id="github-actions"><a href="https://internal.net" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="GitHub Actions（CI/CD）を開く" class="item-link"><title>GitHub Actions（CI/CD）を開く</title>
-<rect x="736" y="202" width="125" height="40" rx="3" fill="#1e8449" stroke="#165f35"/>
-<text x="798.5" y="219" class="bar-label" text-anchor="middle" style="fill:#ffffff">GitHub Action</text>
-<text x="798.5" y="236" class="bar-label" text-anchor="middle" style="fill:#ffffff">s（CI/CD）</text>
+<rect x="759.3333333333333" y="202" width="113.33333333333333" height="40" rx="3" fill="#1e8449" stroke="#165f35"/>
+<text x="815.9999999999999" y="219" class="bar-label" text-anchor="middle" style="fill:#ffffff">GitHub Actio</text>
+<text x="815.9999999999999" y="236" class="bar-label" text-anchor="middle" style="fill:#ffffff">ns（CI/CD）</text>
 </a></g>
 <g data-item-id="datadog-ops"><a href="https://internal.net" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="Datadog監視ダッシュボードを開く" class="item-link"><title>Datadog監視ダッシュボードを開く</title>
-<rect x="869" y="202" width="125" height="40" rx="3" fill="#6c3483" stroke="#4e255e"/>
-<text x="931.5" y="219" class="bar-label" text-anchor="middle" style="fill:#ffffff">Datadog監視ダ</text>
-<text x="931.5" y="236" class="bar-label" text-anchor="middle" style="fill:#ffffff">ッシュボード</text>
+<rect x="880.6666666666666" y="332" width="113.33333333333333" height="40" rx="3" fill="#6c3483" stroke="#4e255e"/>
+<text x="937.3333333333333" y="349" class="bar-label" text-anchor="middle" style="fill:#ffffff">Datadog監視</text>
+<text x="937.3333333333333" y="366" class="bar-label" text-anchor="middle" style="fill:#ffffff">ダッシュボード</text>
 </a></g>
 <g data-item-id="sonar-qube"><a href="https://internal.net" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="SonarQube（静的解析コードレビュー）を開く" class="item-link"><title>SonarQube（静的解析コードレビュー）を開く</title>
-<rect x="337" y="274" width="391" height="34" rx="3" fill="#e67e22" stroke="#a65b18"/>
-<text x="532.5" y="296.5" class="bar-label" text-anchor="middle" style="fill:#172c46">SonarQube（静的解析コードレビュー）</text>
+<rect x="395.3333333333333" y="404" width="356" height="34" rx="3" fill="#e67e22" stroke="#a65b18"/>
+<text x="573.3333333333333" y="426.5" class="bar-label" text-anchor="middle" style="fill:#172c46">SonarQube（静的解析コードレビュー）</text>
 </a></g>
 <g data-item-id="play-wright"><a href="https://your-wiki.internal" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="Playwright（E2E）を開く" class="item-link"><title>Playwright（E2E）を開く</title>
-<rect x="603" y="324" width="125" height="40" rx="3" fill="#cb4335" stroke="#923026"/>
-<text x="665.5" y="341" class="bar-label" text-anchor="middle" style="fill:#ffffff">Playwright（E2</text>
-<text x="665.5" y="358" class="bar-label" text-anchor="middle" style="fill:#ffffff">E）</text>
+<rect x="638" y="454" width="113.33333333333333" height="40" rx="3" fill="#cb4335" stroke="#923026"/>
+<text x="694.6666666666666" y="471" class="bar-label" text-anchor="middle" style="fill:#ffffff">Playwright（</text>
+<text x="694.6666666666666" y="488" class="bar-label" text-anchor="middle" style="fill:#ffffff">E2E）</text>
 </a></g>
 </svg>

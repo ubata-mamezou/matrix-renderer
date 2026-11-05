@@ -1,10 +1,17 @@
 title: Full feature regression # マトリクスタイトル
 width: 800 # マトリクスの幅
+lineColor: "#8798a8" # マトリクスの罫線色
 xAxis:
   label: Lifecycle # x軸のラベル
   values: # x軸の設定
     - label: Plan # 列ラベル
       color: "#d6eaf8" # 列の色
+      sub-labels:
+        - label: Preparation
+          sub-labels:
+            - Research
+            - Scoping
+        - Design
     - Doing # 列ラベル（色指定なし）
     - label: Review
       color: "#f4e2ad"
@@ -14,30 +21,38 @@ yAxis: # y軸の設定
   values:
     - label: Operations # 行のラベル
       color: "#c5e4ec" # 行の色
-    - Data # 行のラベル（色指定なし）
+      sub-labels:
+        - label: Live
+          sub-labels:
+            - Alert
+            - Fix
+        - Policy
+    - label: Data # 行のラベル（色指定なし）
+      sub-labels:
+        - Store
     - label: Business # 行のラベル（色指定なし、属性名あり）
 items: # プロットするアイテムの設定
   - id: linked-guide # アイテムのID
     label: Linked operational guide with a long label # アイテムのラベル
-    lane: Operations # アイテムが属する行
-    from: Plan # アイテムの開始列
-    to: Plan # アイテムの終了列
+    lane: Alert # アイテムが属する行
+    from: Research # アイテムの開始列
+    to: Research # アイテムの終了列
     url: https://example.com/guide # アイテムのリンク
     color: "#245080" # アイテムの色
   - id: overlapping-guide
     label: Overlapping guide
-    lane: Operations
-    from: Plan
+    lane: Alert
+    from: Research
     to: Review
     color: "#abc"
   - id: data-tool
     label: Data tool
-    lane: Data
+    lane: Store
     from: Doing
     to: Review
     before-item: data-foundation # data-foundationの右側に配置
   - id: data-foundation
     label: Data foundation
-    lane: Data
-    from: Plan
-    to: Plan
+    lane: Store
+    from: Research
+    to: Research

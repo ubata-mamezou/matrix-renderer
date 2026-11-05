@@ -17,6 +17,8 @@ const TRACK_MIN_HEIGHT = 42;
 const LANE_PADDING = 12;
 const LANE_MIN_HEIGHT = 58;
 export const MARGIN = { top: 120, right: 2, bottom: 40, left: 200 };
+const HEADER_ROW_HEIGHT = 32;
+const HEADER_BASE_Y = MARGIN.top - HEADER_ROW_HEIGHT;
 const COLORS = {
   ink: "#172c46",
   muted: "#536579",
@@ -117,8 +119,11 @@ function characterWidth(character) {
  * @param {number} maxWidth
  * @returns {string[]}
  */
-function wrapLabel(label, maxWidth) {
-  const maxUnits = Math.max(6, Math.floor(maxWidth / (FONT_SIZE * 0.95)));
+function wrapLabel(label, maxWidth, minimumUnits = 6) {
+  const maxUnits = Math.max(
+    minimumUnits,
+    Math.floor(maxWidth / (FONT_SIZE * 0.95)),
+  );
   const lines = [];
   let line = "";
   let units = 0;
@@ -134,6 +139,49 @@ function wrapLabel(label, maxWidth) {
   }
   if (line) lines.push(line);
   return lines;
+}
+
+/** @param {AxisValue} value @returns {number} */
+function axisLeafCount(value) {
+  return value.subValues.length > 0
+    ? value.subValues.reduce((sum, child) => sum + axisLeafCount(child), 0)
+    : 1;
+}
+
+/** @param {AxisDefinition} axis @returns {number[]} */
+function getLaneLabelColumnWidths(axis) {
+  if (axis.maxDepth === 1) return [MARGIN.left - 12];
+
+  const widths = Array(axis.maxDepth).fill(48);
+  const visit = (values, depth) => {
+    for (const value of values) {
+      const units = Array.from(value.label).reduce(
+        (sum, character) => sum + characterWidth(character),
+        0,
+      );
+      widths[depth] = Math.max(widths[depth], units * 15 + 24);
+      visit(value.subValues, depth + 1);
+    }
+  };
+  visit(axis.values, 0);
+  return widths.map(Math.ceil);
+}
+
+/** @param {AxisDefinition} axis @param {number} columnWidth @returns {number[]} */
+function getColumnHeaderRowHeights(axis, columnWidth) {
+  if (axis.maxDepth === 1) return [HEADER_ROW_HEIGHT];
+
+  const heights = Array(axis.maxDepth).fill(HEADER_ROW_HEIGHT);
+  const visit = (values, depth) => {
+    for (const value of values) {
+      const width = axisLeafCount(value) * columnWidth;
+      const lines = wrapLabel(value.label, width - 12, 1);
+      heights[depth] = Math.max(heights[depth], lines.length * 14 + 8);
+      visit(value.subValues, depth + 1);
+    }
+  };
+  visit(axis.values, 0);
+  return heights;
 }
 
 /** 描画に必要な項目状態を保持する。 */
@@ -266,11 +314,13 @@ function assignTracks(items) {
  * @param {number} columnWidth X軸1列の幅
  * @returns {LaneLayout[]}
  */
-function layoutLanes(data, columnWidth) {
+function layoutLanes(data, columnWidth, leftMargin, plotTop) {
   const columnIndex = new Map(
-    data.xAxes.values.map(({ label }, index) => [label, index]),
+    data.xAxes.leafValues.map(({ label }, index) => [label, index]),
   );
-  const itemsByLane = new Map(data.yAxes.values.map(({ label }) => [label, []]));
+  const itemsByLane = new Map(
+    data.yAxes.leafValues.map(({ label }) => [label, []]),
+  );
 
   for (const source of data.items) {
     const start = columnIndex.get(source.from);
@@ -280,22 +330,26 @@ function layoutLanes(data, columnWidth) {
         source,
         start,
         end,
-        MARGIN.left + start * columnWidth,
+        leftMargin + start * columnWidth,
         (end - start) * columnWidth,
       ),
     );
   }
 
-  let y = MARGIN.top;
-  return data.yAxes.values.map(({ label, color }) => {
+  const layouts = data.yAxes.leafValues.map(({ label, color }, laneIndex) => {
     const tracks = assignTracks(itemsByLane.get(label));
     const contentHeight =
       tracks.reduce((sum, track) => sum + track.height, 0) +
       Math.max(0, tracks.length - 1) * TRACK_GAP;
     const height = Math.max(LANE_MIN_HEIGHT, contentHeight + LANE_PADDING * 2);
-    const layout = { lane: label, color, tracks, y, height };
-    y += height;
-    return layout;
+    return { lane: label, color, tracks, y: 0, height, laneIndex };
+  });
+
+  let y = plotTop;
+  return layouts.map((layout) => {
+    const positioned = { ...layout, y };
+    y += layout.height;
+    return positioned;
   });
 }
 
@@ -305,58 +359,145 @@ function text(x, y, value, attributes = "") {
 }
 
 /** SVG開始タグ、背景、スタイル、タイトル、軸ラベル。 @returns {string[]} */
-function renderFrame(data, width, height) {
+function renderFrame(data, width, height, leftMargin, plotTop) {
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
     `<rect width="100%" height="100%" fill="${COLORS.background}"/>`,
     `<style>text{font-family:Arial,"Noto Sans JP","Yu Gothic",sans-serif;fill:${COLORS.ink}}.axis{font-size:13px}.title{font-size:24px;font-weight:700}.lane-label{font-size:15px;font-weight:700}.bar-label{font-size:${FONT_SIZE}px;font-weight:600}.item-link{cursor:pointer}.item-link text{text-decoration:underline}.item-link:hover rect,.item-link:focus-visible rect{fill:#c4def4;stroke:#145c91;stroke-width:2}</style>`,
-    text(MARGIN.left, 42, data.title, 'class="title"'),
-    text(MARGIN.left, 78, data.xAxes.label, 'class="axis" font-weight="700"'),
-    text(24, MARGIN.top - 14, data.yAxes.label, 'class="axis" font-weight="700"'),
+    text(leftMargin, 42, data.title, 'class="title"'),
+    text(leftMargin, 78, data.xAxes.label, 'class="axis" font-weight="700"'),
+    text(24, plotTop - 14, data.yAxes.label, 'class="axis" font-weight="700"'),
   ];
 }
 
-/** X軸の列見出し。 @returns {string[]} */
-function renderColumnHeaders(xAxes, columnWidth) {
-  return xAxes.values.flatMap(({ label, color }, index) => {
-    const x = MARGIN.left + index * columnWidth;
-    const palette = itemColors(color, COLORS.laneAlt, COLORS.grid);
-    return [
-      `<rect x="${x}" y="${MARGIN.top - 32}" width="${columnWidth}" height="32" fill="${palette.fill}"/>`,
-      text(
-        x + columnWidth / 2,
-        MARGIN.top - 11,
-        label,
-        `class="axis" text-anchor="middle" style="fill:${palette.text}"`,
-      ),
-    ];
-  });
+/** X軸の階層見出し。 @returns {string[]} */
+function renderColumnHeaders(xAxes, columnWidth, rowHeights, leftMargin, lineColor) {
+  if (xAxes.maxDepth === 1) {
+    return xAxes.values.flatMap(({ label, color }, index) => {
+      const x = leftMargin + index * columnWidth;
+      const palette = itemColors(color, COLORS.laneAlt, lineColor);
+      return [
+        `<rect x="${x}" y="${HEADER_BASE_Y}" width="${columnWidth}" height="${HEADER_ROW_HEIGHT}" fill="${palette.fill}"/>`,
+        text(
+          x + columnWidth / 2,
+          HEADER_BASE_Y + 21,
+          label,
+          `class="axis" text-anchor="middle" style="fill:${palette.text}"`,
+        ),
+      ];
+    });
+  }
+
+  const parts = [];
+  let leafIndex = 0;
+
+  const renderValues = (values, depth) => {
+    for (const value of values) {
+      const hasChildren = value.subValues.length > 0;
+      const width = axisLeafCount(value) * columnWidth;
+      const x = leftMargin + leafIndex * columnWidth;
+      const y =
+        HEADER_BASE_Y +
+        rowHeights.slice(0, depth).reduce((sum, height) => sum + height, 0);
+      const height = hasChildren
+        ? rowHeights[depth]
+        : rowHeights.slice(depth).reduce((sum, rowHeight) => sum + rowHeight, 0);
+      const palette = itemColors(value.color, COLORS.laneAlt, lineColor);
+      const lines = wrapLabel(value.label, width - 12, 1);
+
+      parts.push(
+        `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${palette.fill}" stroke="${lineColor}"/>`,
+        ...lines.map((line, lineIndex) =>
+          text(
+            x + width / 2,
+            y + 14 + lineIndex * 14,
+            line,
+            `class="axis" text-anchor="middle" style="fill:${palette.text}"`,
+          ),
+        ),
+      );
+
+      if (hasChildren) renderValues(value.subValues, depth + 1);
+      else leafIndex += 1;
+    }
+  };
+
+  renderValues(xAxes.values, 0);
+  return parts;
 }
 
 /** Y軸のレーン背景、見出し、区切り線。 @param {LaneLayout[]} lanes @returns {string[]} */
-function renderLaneBackgrounds(lanes, width) {
-  return lanes.flatMap((layout, laneIndex) => {
-    const fill = laneIndex % 2 === 0 ? COLORS.lane : COLORS.background;
-    const palette = itemColors(layout.color, COLORS.laneAlt, COLORS.grid);
+function renderLaneBackgrounds(lanes, width, leftMargin, hasNestedAxis, lineColor) {
+  return lanes.flatMap((layout) => {
+    const fill = layout.laneIndex % 2 === 0 ? COLORS.lane : COLORS.background;
+    const palette = itemColors(layout.color, COLORS.laneAlt, lineColor);
     return [
       `<rect x="0" y="${layout.y}" width="${width}" height="${layout.height}" fill="${fill}"/>`,
-      `<rect x="0" y="${layout.y}" width="${MARGIN.left - 12}" height="${layout.height}" fill="${palette.fill}"/>`,
-      text(
-        18,
-        layout.y + layout.height / 2 + 5,
-        layout.lane,
-        `class="lane-label" style="fill:${palette.text}"`,
-      ),
-      `<line x1="0" y1="${layout.y + layout.height}" x2="${width}" y2="${layout.y + layout.height}" stroke="${COLORS.grid}"/>`,
+      ...(!hasNestedAxis
+        ? [
+            `<rect x="0" y="${layout.y}" width="${leftMargin - 12}" height="${layout.height}" fill="${palette.fill}"/>`,
+            text(
+              18,
+              layout.y + layout.height / 2 + 5,
+              layout.lane,
+              `class="lane-label" style="fill:${palette.text}"`,
+            ),
+          ]
+        : []),
+      `<line x1="${hasNestedAxis ? leftMargin : 0}" y1="${layout.y + layout.height}" x2="${width}" y2="${layout.y + layout.height}" stroke="${lineColor}"/>`,
     ];
   });
 }
 
+/** Y軸の階層見出しセル。 @param {LaneLayout[]} lanes @returns {string[]} */
+function renderLaneHeaders(yAxes, lanes, columnWidths, lineColor) {
+  const parts = [];
+  let laneIndex = 0;
+
+  const renderValues = (values, depth) => {
+    for (const value of values) {
+      const hasChildren = value.subValues.length > 0;
+      const count = axisLeafCount(value);
+      const firstLane = lanes[laneIndex];
+      const lastLane = lanes[laneIndex + count - 1];
+      const x = columnWidths
+        .slice(0, depth)
+        .reduce((sum, width) => sum + width, 0);
+      const width = hasChildren
+        ? columnWidths[depth]
+        : columnWidths.slice(depth).reduce((sum, columnWidth) => sum + columnWidth, 0);
+      const height = lastLane.y + lastLane.height - firstLane.y;
+      const palette = itemColors(value.color, COLORS.laneAlt, lineColor);
+      const lines = wrapLabel(value.label, width - 16, 1);
+      const firstBaseline =
+        firstLane.y + (height - lines.length * LINE_HEIGHT) / 2 + 15;
+
+      parts.push(
+        `<rect x="${x}" y="${firstLane.y}" width="${width}" height="${height}" fill="${palette.fill}" stroke="${lineColor}"/>`,
+        ...lines.map((line, lineIndex) =>
+          text(
+            x + width / 2,
+            firstBaseline + lineIndex * LINE_HEIGHT,
+            line,
+            `class="lane-label" text-anchor="middle" style="fill:${palette.text}"`,
+          ),
+        ),
+      );
+
+      if (hasChildren) renderValues(value.subValues, depth + 1);
+      else laneIndex += 1;
+    }
+  };
+
+  renderValues(yAxes.values, 0);
+  return parts;
+}
+
 /** 列の区切り線。 @returns {string[]} */
-function renderGridLines(columnCount, columnWidth, plotHeight) {
+function renderGridLines(columnCount, columnWidth, plotHeight, plotTop, leftMargin, lineColor) {
   return Array.from({ length: columnCount + 1 }, (_, index) => {
-    const x = MARGIN.left + index * columnWidth;
-    return `<line x1="${x}" y1="${MARGIN.top}" x2="${x}" y2="${MARGIN.top + plotHeight}" stroke="${COLORS.grid}"/>`;
+    const x = leftMargin + index * columnWidth;
+    return `<line x1="${x}" y1="${plotTop}" x2="${x}" y2="${plotTop + plotHeight}" stroke="${lineColor}"/>`;
   });
 }
 
@@ -409,19 +550,48 @@ function renderItems(lanes) {
  * @returns {{ svg: string, width: number, height: number }}
  */
 export function renderSvg(data) {
-  const { xAxes } = data;
+  const { xAxes, yAxes } = data;
   const width = data.width;
+  const lineColor = data.lineColor ?? COLORS.grid;
+  const laneLabelColumnWidths = getLaneLabelColumnWidths(yAxes);
+  const leftMargin = laneLabelColumnWidths.reduce((sum, value) => sum + value, 0) + 12;
   const columnWidth =
-    (width - MARGIN.left - MARGIN.right) / xAxes.values.length;
-  const lanes = layoutLanes(data, columnWidth);
+    (width - leftMargin - MARGIN.right) / xAxes.leafValues.length;
+  const headerRowHeights = getColumnHeaderRowHeights(xAxes, columnWidth);
+  const plotTop =
+    HEADER_BASE_Y +
+    headerRowHeights.reduce((sum, height) => sum + height, 0);
+  const lanes = layoutLanes(data, columnWidth, leftMargin, plotTop);
   const plotHeight = lanes.reduce((sum, lane) => sum + lane.height, 0);
-  const height = MARGIN.top + plotHeight + MARGIN.bottom;
+  const height = plotTop + plotHeight + MARGIN.bottom;
 
   const parts = [
-    ...renderFrame(data, width, height),
-    ...renderColumnHeaders(xAxes, columnWidth),
-    ...renderLaneBackgrounds(lanes, width),
-    ...renderGridLines(xAxes.values.length, columnWidth, plotHeight),
+    ...renderFrame(data, width, height, leftMargin, plotTop),
+    ...renderColumnHeaders(
+      xAxes,
+      columnWidth,
+      headerRowHeights,
+      leftMargin,
+      lineColor,
+    ),
+    ...renderLaneBackgrounds(
+      lanes,
+      width,
+      leftMargin,
+      yAxes.maxDepth > 1,
+      lineColor,
+    ),
+    ...(yAxes.maxDepth > 1
+      ? renderLaneHeaders(yAxes, lanes, laneLabelColumnWidths, lineColor)
+      : []),
+    ...renderGridLines(
+      xAxes.leafValues.length,
+      columnWidth,
+      plotHeight,
+      plotTop,
+      leftMargin,
+      lineColor,
+    ),
     ...renderItems(lanes),
     "</svg>",
   ];

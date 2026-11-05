@@ -27,18 +27,21 @@ yAxis:
   values:
     - label: 方向づけ
       color: "#d6eaf8"
-    - label: トップページ
+    - label: 機能開発
       color: "#d5f5e3"
-    - label: メンバー管理
-      color: "#d5f5e3"
-    - label: システム設定
-      color: "#d5f5e3"
-    - label: タスク管理
-      color: "#d5f5e3"
-    - label: スケジュール
-      color: "#d5f5e3"
-    - label: プロジェクト管理
-      color: "#d5f5e3"
+      sub-labels:
+        - label: トップページ
+          color: "#d5f5e3"
+        - label: メンバー管理
+          color: "#d5f5e3"
+        - label: システム設定
+          color: "#d5f5e3"
+        - label: タスク管理
+          color: "#d5f5e3"
+        - label: スケジュール
+          color: "#d5f5e3"
+        - label: プロジェクト管理
+          color: "#d5f5e3"
     - label: 移行
       color: "#fcf3cf"
 items:

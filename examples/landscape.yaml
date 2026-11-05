@@ -19,11 +19,12 @@ yAxis:
   label: テクノロジースタック
   values:
     - label: アプリケーション
-      color: "#fdfefe"
-    - label: インフラ・CI/CD
-      color: "#fdfefe"
+    - label: インフラストラクチャ
+      sub-labels:
+        - CI/CD
+        - 実行環境
+        - 運用監視
     - label: セキュリティ・品質
-      color: "#fdfefe"
 items:
   - id: git-guide
     label: GitHub・Git利用規約ガイド
@@ -48,14 +49,14 @@ items:
     color: "#cb4335"
   - id: github-actions
     label: GitHub Actions（CI/CD）
-    lane: インフラ・CI/CD
+    lane: CI/CD
     from: デプロイ
     to: デプロイ
     url: https://internal.net
     color: "#1e8449"
   - id: datadog-ops
     label: Datadog監視ダッシュボード
-    lane: インフラ・CI/CD
+    lane: 運用監視
     from: 運用・監視
     to: 運用・監視
     url: https://internal.net

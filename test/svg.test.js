@@ -108,6 +108,87 @@ describe('renderSvg', () => {
     }
   });
 
+  test('keeps single-level X-axis labels on one line', () => {
+    const source = definition({
+      xAxis: { label: 'Month', values: ['2026/1'] },
+      items: [
+        { id: 'a', label: 'Item A', lane: 'Ops', from: '2026/1', to: '2026/1' },
+      ],
+    });
+    const { svg } = renderSvg(source);
+
+    assert.ok(svg.includes('>2026/1</text>'));
+    assert.ok(!svg.includes('>202</text>'));
+  });
+
+  test('preserves individual nested Y-axis lane heights and merges parent labels', () => {
+    const source = definition({
+      xAxis: {
+        label: 'Phase',
+        values: [
+          { label: 'Plan', 'sub-labels': ['Define', 'Review'] },
+          'Delivery',
+        ],
+      },
+      yAxis: {
+        label: 'Area',
+        values: [
+          { label: 'Operations', 'sub-labels': ['Incident', 'Change'] },
+          'Data',
+        ],
+      },
+      items: [
+        { id: 'a', label: 'A', lane: 'Incident', from: 'Define', to: 'Review' },
+        { id: 'b', label: 'B', lane: 'Change', from: 'Delivery', to: 'Delivery' },
+      ],
+    });
+    const { svg } = renderSvg(source);
+
+    for (const label of ['Plan', 'Define', 'Review', 'Delivery', 'Operations', 'Incident', 'Change', 'Data']) {
+      assert.ok(svg.includes(`>${label}</text>`), label);
+    }
+
+    const planWidth = Number(
+      svg.match(/<rect x="[\d.]+" y="88" width="([\d.]+)" height="32" fill="#ebf1f6" stroke="#d7e0e8"\/>/)[1],
+    );
+    const deliveryWidth = Number(
+      svg.match(/<rect x="[\d.]+" y="88" width="([\d.]+)" height="64" fill="#ebf1f6" stroke="#d7e0e8"\/>/)[1],
+    );
+    assert.equal(planWidth, deliveryWidth * 2);
+
+    const laneHeights = [...svg.matchAll(/<rect x="0" y="[\d.]+" width="800" height="([\d.]+)" fill="(?:#f4f7fa|#ffffff)"\/>/g)].map(
+      ([, height]) => Number(height),
+    );
+    assert.equal(laneHeights.length, 3);
+    assert.equal(laneHeights[0], laneHeights[1]);
+    assert.notEqual(laneHeights[1], laneHeights[2]);
+    assert.ok(svg.includes(`height="${laneHeights[0] + laneHeights[1]}" fill="#ebf1f6" stroke="#d7e0e8"/>`));
+
+    const laneHeaderCells = [...svg.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="#ebf1f6" stroke="#d7e0e8"\/>/g)].map(
+      ([, x, y, width, height]) => ({
+        x: Number(x),
+        y: Number(y),
+        width: Number(width),
+        height: Number(height),
+      }),
+    );
+    const operationsCell = laneHeaderCells.find(
+      ({ x, y, height }) =>
+        x === 0 && y === 152 && height === laneHeights[0] + laneHeights[1],
+    );
+    const incidentCell = laneHeaderCells.find(
+      ({ x, y, height }) =>
+        x === operationsCell.width && y === 152 && height === laneHeights[0],
+    );
+    const dataCell = laneHeaderCells.find(
+      ({ x, y, height }) =>
+        x === 0 &&
+        y === 152 + laneHeights[0] * 2 &&
+        height === laneHeights[2],
+    );
+    assert.equal(dataCell.width, operationsCell.width + incidentCell.width);
+  });
+
   test('draws one more vertical grid line than columns', () => {
     const { svg } = renderSvg(definition());
 
@@ -127,6 +208,56 @@ describe('renderSvg', () => {
     );
 
     assert.ok(svg.includes('fill="#d6eaf8"'));
+  });
+
+  test('applies the global line color to grid lines and nested header borders', () => {
+    const source = definition({
+      lineColor: '#789abc',
+      xAxis: {
+        label: 'Phase',
+        values: [{ label: 'Plan', 'sub-labels': ['Define', 'Review'] }],
+      },
+      yAxis: {
+        label: 'Category',
+        values: [{ label: 'Ops', 'sub-labels': ['Incident'] }],
+      },
+      items: [
+        { id: 'guide', label: 'Guide', lane: 'Incident', from: 'Define', to: 'Review' },
+      ],
+    });
+    const { svg } = renderSvg(source);
+
+    assert.ok(svg.includes('stroke="#789abc"'));
+    assert.ok(!svg.includes('stroke="#d7e0e8"'));
+  });
+
+  test('inherits axis colors and allows child overrides', () => {
+    const source = definition({
+      xAxis: {
+        label: 'Phase',
+        values: [
+          {
+            label: 'Plan',
+            color: '#336699',
+            'sub-labels': ['Define', { label: 'Review', color: '#cc6633' }],
+          },
+        ],
+      },
+      yAxis: {
+        label: 'Category',
+        values: [
+          { label: 'Ops', color: '#884422', 'sub-labels': ['Incident'] },
+        ],
+      },
+      items: [
+        { id: 'guide', label: 'Guide', lane: 'Incident', from: 'Define', to: 'Review' },
+      ],
+    });
+    const { svg } = renderSvg(source);
+
+    assert.equal((svg.match(/fill="#336699"/g) ?? []).length, 2);
+    assert.equal((svg.match(/fill="#cc6633"/g) ?? []).length, 1);
+    assert.equal((svg.match(/fill="#884422"/g) ?? []).length, 2);
   });
 
   test('draws every item with its id', () => {
