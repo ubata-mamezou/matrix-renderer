@@ -105,3 +105,8 @@ npx matrix-renderer render -- example.yaml --out output/rename --out-type svg --
 |プロジェクト管理ツール開発ロードマップ|[YAML](examples/project-management-roadmap.yaml)　[PNG](output/project-management-roadmap.png)　[SVG](output/project-management-roadmap.svg)|before-itemの指定例|
 |旬の食材カレンダー|[YAML](examples/seasonal-produce.yaml)　[PNG](output/seasonal-produce.png)　[SVG](output/seasonal-produce.svg)||
 |社内標準テクノロジー・カタログ|[YAML](examples/technology-radar.yaml)　[PNG](output/technology-radar.png)　[SVG](output/technology-radar.svg)||
+
+##　関連記事
+
+* [作図ツールで作るマトリクス図のメンテがつらいのでYAMLから自動生成するCLIツールを作りました](https://developer.mamezou-tech.com/blogs/2026/10/29/introduction-tool_matrix-renderer/)
+
