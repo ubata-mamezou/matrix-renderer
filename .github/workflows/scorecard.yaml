@@ -1,0 +1,50 @@
+name: Scorecard supply-chain security
+on:
+  schedule:
+    - cron: '30 1 * * 1' # 毎週月曜に定期スキャン
+  push:
+    branches: [ "main" ]
+
+# 既定ではすべての権限を無効化し、ジョブで必要な権限だけ付与する
+permissions: {}
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # OpenSSFへの公開（バッジ/API）を有効にする場合に追加する
+      # id-token: write
+      # GitHub Code Scanningにも登録する場合のみ追加する
+      # security-events: write
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: "Run analysis"
+        uses: ossf/scorecard-action@fa7117db83c52d787ae5a89f350999701505d78e # v2.5.0
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # バッジ/APIに結果を公開する場合は true に変更し、上記 id-token: write も有効にする
+          publish_results: false
+
+      - name: "Save results for inspection"
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 5
+
+      # Code Scanningにも結果を登録する場合のみ、security-events: write と合わせて有効にする
+      # - name: "Upload to code-scanning"
+      #   uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+      #   with:
+      #     sarif_file: results.sarif
+
+# OpenSSFへの公開を有効にした後、README.md に追加するバッジ（OWNER/REPOSITORYを置き換える）
+# [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/OWNER/REPOSITORY/badge)](https://scorecard.dev/viewer/?uri=github.com/OWNER/REPOSITORY)
