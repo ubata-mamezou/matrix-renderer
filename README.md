@@ -16,6 +16,7 @@
 [![Socket Badge](https://socket.dev/api/badge/npm/package/matrix-renderer)](https://socket.dev/npm/package/matrix-renderer)
 [![Known Vulnerabilities](https://snyk.io/test/npm/matrix-renderer/badge.svg)](https://snyk.io/test/npm/matrix-renderer)
 [![npm provenance](https://img.shields.io/badge/provenance-verified-blue.svg)](https://www.npmjs.com/package/matrix-renderer)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/ubata-mamezou/matrix-renderer/badge)](https://scorecard.dev/viewer/?uri=github.com/ubata-mamezou/matrix-renderer)
 
 </div>
 
