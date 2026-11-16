@@ -1,0 +1,19 @@
+name: Build
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    uses: ./.github/workflows/_version-resolver.yaml
+
+  build:
+    uses: ./.github/workflows/_build.yaml
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
