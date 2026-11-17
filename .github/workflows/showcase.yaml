@@ -1,0 +1,103 @@
+name: Publish showcase
+
+# サンプルやページの変更時と、手動実行時に再生成する
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'examples/**'
+      - 'showcase/**'
+      - '.github/workflows/showcase.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Pagesへの同時デプロイを避ける
+  group: pages-showcase
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Install Japanese fonts
+        # Linux上のPNG生成で日本語を描画するためのフォント
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+
+      # 以下のテストはショーケース専用で、画像生成には不要
+      - name: Test showcase generation
+        run: node --test test/showcase.test.js
+
+      # ここまでのチェックアウト・Node.js・フォント準備と、このステップで画像を生成する
+      - name: Render examples with the published package
+        id: render
+        env:
+          PROJECT_DIR: ${{ github.workspace }}
+          # npmパッケージのライフサイクルスクリプトを実行しない
+          NPM_CONFIG_IGNORE_SCRIPTS: 'true'
+        # リポジトリ内のローカルパッケージではなく、npmの公開パッケージを使う
+        working-directory: ${{ runner.temp }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # 生成に使う公開バージョンを取得する（固定バージョンへの変更も可能）
+          version="$(npm view matrix-renderer@latest version)"
+          echo "Using matrix-renderer ${version}"
+          mkdir -p "$RUNNER_TEMP/showcase/images"
+          shopt -s nullglob
+          examples=("$PROJECT_DIR"/examples/*.yaml "$PROJECT_DIR"/examples/*.yml)
+          if ((${#examples[@]} == 0)); then
+            echo "No example YAML files found" >&2
+            exit 1
+          fi
+          for input in "${examples[@]}"; do
+            name="$(basename "${input%.*}")"
+            # --out は拡張子なしの出力先。--out-type省略でPNGとSVGの両方を生成する
+            npx --yes --package "matrix-renderer@$version" -- matrix-renderer render -- "$input" --out "$RUNNER_TEMP/showcase/images/$name"
+          done
+          # ショーケースのバージョン表示に引き渡す
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      # ショーケース専用のHTML生成。画像生成だけならこのステップは不要
+      - name: Build showcase page
+        env:
+          RENDERER_VERSION: ${{ steps.render.outputs.version }}
+        run: node showcase/build.js examples "$RUNNER_TEMP/showcase" "$RENDERER_VERSION"
+
+      # 以下はGitHub Pagesへの公開に必要なステップ
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+
+      - name: Upload GitHub Pages artifact
+        # 画像とHTMLをまとめてPages公開用アーティファクトにする
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: ${{ runner.temp }}/showcase
+
+  deploy:
+    # ビルドが成功した場合のみ、Pagesにデプロイする
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      # Pagesへの公開とデプロイ認証に必要な権限
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

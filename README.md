@@ -87,6 +87,16 @@ matrix-rendererは、プレーンなYAMLテキストをGitで管理するだけ�
 npx matrix-renderer render -- example.yaml --out output/rename --out-type svg --lang ja
 ```
 
+## GitHub Actionsへの組み込み例
+
+[ショーケースのワークフロー](.github/workflows/showcase.yaml)では、`examples/` のYAMLから公開済みのmatrix-rendererでPNG・SVGを生成し、GitHub Pagesに公開しています。
+
+* **画像生成**: チェックアウト、Node.jsの準備、`Render examples with the published package` ステップを参照してください。日本語を含むPNGには日本語フォントの準備も必要です。入力パスや起動条件は用途に合わせて変更できます。
+* **ショーケース固有**: `Test showcase generation` と `Build showcase page` はこのリポジトリのページ用で、画像生成には不要です。
+* **Pages公開**: GitHub ActionsからGitHub Pagesにコンテンツを公開する場合、`Settings > Pages`で、Sourceを **GitHub Actions** に設定する必要があります。公開する場合は、内容に機密情報が含まれないことを必ず確認してください。
+
+例では実行時の公開最新版を使用します。再現性が必要な場合は、`version` を公開済みの具体的なバージョンに固定してください。GitHub Actionsなどの利用条件によっては料金が発生します。
+
 ## 🛠️ YAML template / YAML設定テンプレート
 
 マトリクスの設定ファイル仕様は[こちら](docs/ja/template.md)を参照してください。
@@ -95,6 +105,8 @@ npx matrix-renderer render -- example.yaml --out output/rename --out-type svg --
 ## 🛠️ Sample / サンプル
 
 [`examples/`](examples/)に入力ファイル、[`output/`](output/)に生成したイメージファイルを格納しています。
+
+[ショーケース](https://ubata-mamezou.github.io/matrix-renderer/)では、生成時点の公開最新版で生成したPNG・SVGと入力YAMLを並べて確認できます。使用したバージョンもページに表示しています。
 
 |サンプル名|サンプル|備考|
 |---|---|---|

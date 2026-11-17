@@ -48,6 +48,8 @@ npm ci --ignore-scripts
 |---|---|
 | [build.yaml](../../.github/workflows/build.yaml) | main向けの全PRで、共通のバージョン取得とビルド検証を呼び出す |
 | [publish.yaml](../../.github/workflows/publish.yaml) | mainへのpushまたは手動実行で、共通処理と条件付きのリリースを実行する |
+| [showcase.yaml](../../.github/workflows/showcase.yaml) | サンプル画像とショーケースを生成し、GitHub Pagesに公開する |
+| [scorecard.yaml](../../.github/workflows/scorecard.yaml) | OpenSSF Scorecardでサプライチェーンのセキュリティを定期・随時に評価する |
 | [_build.yaml](../../.github/workflows/_build.yaml) | `workflow_call`で起動し、検証処理とCodeQL、任意のNode.js互換性検証を実行する。バージョンは返さない |
 | [_version-resolver.yaml](../../.github/workflows/_version-resolver.yaml) | `workflow_call`で起動し、現在のバージョンとpush前からの変更有無を返す |
 
@@ -61,6 +63,18 @@ mainへのpushでバージョンが変わり、バージョン取得とビルド
 2. `npm stage publish` を実行し、パッケージをレビュー用にステージングします。
 
 ステージングは最終公開と区別してください。このワークフローには、ステージング後の承認・最終公開を行う処理は含まれていません。また、バージョンを変えないpushや手動実行ではreleaseジョブは実行されません。
+
+### ショーケースの公開
+
+GitHub Pagesの公開元を **GitHub Actions** に設定してください。[showcase.yaml](../../.github/workflows/showcase.yaml)は、`examples/`、`showcase/`または自身のワークフローの変更がmainにpushされたとき、または手動実行時にショーケースを更新します。実行時にnpmの公開最新版を取得し、そのバージョンを使ってサンプルを生成します。
+
+npmへの新バージョン公開だけでは自動更新されないため、必要に応じて「Publish showcase」ワークフローを手動実行してください。
+
+### OpenSSF Scorecardによる評価
+
+[scorecard.yaml](../../.github/workflows/scorecard.yaml)は、mainへのpush、ブランチ保護ルールの変更、毎週月曜01:30 UTC（日本時間10:30）の定期実行、またはActionsからの手動実行で起動します。PRを直接の起動条件にはしていません。
+
+評価結果はSARIF形式で `scorecard-results` アーティファクトに5日間保存し、GitHubのCode Scanningにもアップロードします。`publish_results: true` によりScorecardの結果を公開する設定です。結果や失敗時の詳細はActionsの実行ログ、アーティファクト、またはGitHubのSecurityタブで確認してください。Code Scanningの利用にはリポジトリ側の対応・設定が必要です。評価項目の詳細は[OpenSSF Scorecard Action](https://github.com/ossf/scorecard-action)を参照してください。
 
 ### 任意のNode.js互換性検証
 
