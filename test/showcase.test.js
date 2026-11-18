@@ -24,7 +24,7 @@ test("YAML と両形式の画像を安全に並べ、生成バージョンを表
   assert.match(html, /images\/example%20%26%20one\.png/);
   assert.match(html, /images\/example%20%26%20one\.svg/);
   assert.match(html, /&lt;script&gt;alert\(&#39;x&#39;\)&lt;\/script&gt;/);
-  assert.doesNotMatch(html, /<script>/);
+  assert.doesNotMatch(html, /<script>/i);
   assert.equal(await readFile(join(site, "examples", "example & one.yaml"), "utf8"), "title: <script>alert('x')</script>\n");
 });
 
