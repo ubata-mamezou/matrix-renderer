@@ -37,6 +37,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      attestations: write
     steps:
       - name: Checkout release tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -50,15 +51,57 @@ jobs:
       - name: Install locked dependencies without lifecycle scripts
         run: npm ci --ignore-scripts
 
-      - name: Create GitHub release with generated notes
+      - name: Pack npm package
+        id: package
+        run: |
+          set -euo pipefail
+          PACKAGE_FILE="$(npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP" --json | jq -r '.[0].filename')"
+          if [[ -z "$PACKAGE_FILE" || "$PACKAGE_FILE" == "null" ]]; then
+            echo "npm pack did not produce a package file" >&2
+            exit 1
+          fi
+
+          PACKAGE_PATH="$RUNNER_TEMP/$PACKAGE_FILE"
+          echo "path=$PACKAGE_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Attest npm package provenance
+        id: attest
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: ${{ steps.package.outputs.path }}
+
+      - name: Verify attestation and prepare release assets
+        id: release-assets
+        env:
+          PACKAGE_PATH: ${{ steps.package.outputs.path }}
+          BUNDLE_SOURCE: ${{ steps.attest.outputs.bundle-path }}
+        run: |
+          set -euo pipefail
+          BUNDLE_PATH="${PACKAGE_PATH}.sigstore.json"
+          gh attestation verify "$PACKAGE_PATH" \
+            --bundle "$BUNDLE_SOURCE" \
+            --repo "$GITHUB_REPOSITORY" \
+            --signer-workflow "github.com/$GITHUB_REPOSITORY/.github/workflows/publish.yaml"
+          cp "$BUNDLE_SOURCE" "$BUNDLE_PATH"
+          echo "bundle_path=$BUNDLE_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Publish GitHub release assets
         env:
           GH_TOKEN: ${{ github.token }}
+          PACKAGE_PATH: ${{ steps.package.outputs.path }}
+          BUNDLE_PATH: ${{ steps.release-assets.outputs.bundle_path }}
           VERSION: ${{ needs.version.outputs.version }}
           TARGET_SHA: ${{ github.sha }}
         run: |
+          set -euo pipefail
           TAG="v${VERSION}"
           if ! gh release view "$TAG" >/dev/null 2>&1; then
-            gh release create "$TAG" --target "$TARGET_SHA" --title "$TAG" --generate-notes
+            gh release create "$TAG" "$PACKAGE_PATH" "$BUNDLE_PATH" \
+              --target "$TARGET_SHA" \
+              --title "$TAG" \
+              --generate-notes
+          else
+            gh release upload "$TAG" "$PACKAGE_PATH" "$BUNDLE_PATH" --clobber
           fi
 
       - name: Stage package for review

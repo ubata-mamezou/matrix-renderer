@@ -59,14 +59,29 @@ npm ci --ignore-scripts
 
 mainへのpushでバージョンが変わり、バージョン取得とビルド検証が両方成功した場合だけreleaseジョブが実行されます。
 
-1. `v<version>` のGitHub Releaseがなければ、対象コミットを指定してリリースノート付きで作成します。
-2. `npm stage publish` を実行し、パッケージをレビュー用にステージングします。
+1. `npm pack` でGitHub Releaseに添付するnpmパッケージ（`.tgz`）を生成します。
+2. GitHub提供の `actions/attest` でパッケージのSLSA provenanceを作成し、GitHub Attestationsに登録します。GitHub CLIで検証してから、Sigstoreバンドル（`.sigstore.json`）を添付用に用意します。
+3. `v<version>` のGitHub Releaseがなければ、対象コミットを指定してリリースノート付きで作成し、パッケージとバンドルを添付します。既存のReleaseには両ファイルをアップロードし、同名のアセットがあれば置き換えます。
+4. `npm stage publish` を実行し、パッケージをレビュー用にステージングします。
 
 ステージングは最終公開と区別してください。このワークフローには、ステージング後の承認・最終公開を行う処理は含まれていません。また、バージョンを変えないpushや手動実行ではreleaseジョブは実行されません。
 
+### リリース成果物の署名検証
+
+GitHub Releaseから同じバージョンの `.tgz` と `.sigstore.json` をダウンロードし、GitHub CLIで検証します。
+
+```sh
+# 検証するリリースのバージョンに置き換えてください。
+PACKAGE=matrix-renderer-0.4.0.tgz
+gh attestation verify "$PACKAGE" \
+  --bundle "${PACKAGE}.sigstore.json" \
+  --repo ubata-mamezou/matrix-renderer \
+  --signer-workflow github.com/ubata-mamezou/matrix-renderer/.github/workflows/publish.yaml
+```
+
 ### ショーケースの公開
 
-GitHub Pagesの公開元を **GitHub Actions** に設定してください。[showcase.yaml](../../.github/workflows/showcase.yaml)は、`examples/`、`showcase/`または自身のワークフローの変更がmainにpushされたとき、または手動実行時にショーケースを更新します。実行時にnpmの公開最新版を取得し、そのバージョンを使ってサンプルを生成します。
+リポジトリの **Settings > Pages** で公開元（Source）を **GitHub Actions** に設定してください。公開前に、公開対象に機密情報が含まれていないことを確認してください。[showcase.yaml](../../.github/workflows/showcase.yaml)は、`examples/`、`showcase/`または自身のワークフローの変更がmainにpushされたとき、または手動実行時にショーケースを更新します。実行時にnpmの公開最新版を取得し、そのバージョンを使ってサンプルを生成します。`Test showcase generation` と `Build showcase page` はショーケース固有のステップです。
 
 npmへの新バージョン公開だけでは自動更新されないため、必要に応じて「Publish showcase」ワークフローを手動実行してください。
 
