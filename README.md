@@ -41,9 +41,6 @@ matrix-rendererは、プレーンなYAMLテキストをGitで管理するだけ�
 * Y軸のラベル、テキスト、色、段組み
 * プロットするアイテムのテキスト、配置行、X軸に対応した幅指定、色、URL、アイテム間の前後関係
   
-📗[ショーケース](https://ubata-mamezou.github.io/matrix-renderer/)  
-📗[開発者向けガイド](docs/ja/development.md)
-
 ## glossary / 用語
 
 ![用語説明](assets/glossary.drawio.png)
@@ -84,29 +81,35 @@ matrix-rendererは、プレーンなYAMLテキストをGitで管理するだけ�
 ## ⌘ Command / コマンド
 
 イメージファイルを生成するコマンド例です。  
-使用可能なコマンドパターンは[こちら](docs/ja/command.md)を参照してください。
+使用可能なコマンドパターンはこちらを参照してください。
+* [CLI Commands](docs/en/command.md)
+* [CLIコマンド](docs/ja/command.md)
 
 ```sh
 npx matrix-renderer render -- example.yaml --out output/rename --out-type svg --lang ja
 ```
 
-## GitHub Actionsへの組み込み例
+## 🛠️ YAML template / YAML設定テンプレート
+
+マトリクスの設定ファイル仕様はこちらを参照してください。
+* [YAML Configuration Template](docs/en/template.md)
+* [YAML設定テンプレート](docs/ja/template.md)
+
+## 📋 Sample / サンプル
+
+### GitHub Actionsへの組み込み例
 
 [ショーケースのワークフロー](.github/workflows/showcase.yaml)は、ご自身のリポジトリで画像生成を自動化するときの参考にできます。
 * チェックアウト、Node.jsの準備、`Render examples with the published package` ステップを参照し、入力パスや起動条件を用途に合わせて変更してください。
 * 日本語を含むPNGには、日本語フォントの準備も必要です。  
 
+### Show case
 
-## 🛠️ YAML template / YAML設定テンプレート
+[ショーケース](https://ubata-mamezou.github.io/matrix-renderer/)では、公開最新版で生成したPNG・SVGと入力YAMLを並べて確認できます。使用したバージョンもページに表示しています。
 
-マトリクスの設定ファイル仕様は[こちら](docs/ja/template.md)を参照してください。
-
-
-## 🛠️ Sample / サンプル
+### 設定ファイルと生成例
 
 [`examples/`](examples/)に入力ファイル、[`output/`](output/)に生成したイメージファイルを格納しています。
-
-[ショーケース](https://ubata-mamezou.github.io/matrix-renderer/)では、生成時点の公開最新版で生成したPNG・SVGと入力YAMLを並べて確認できます。使用したバージョンもページに表示しています。
 
 |サンプル名|サンプル|備考|
 |---|---|---|
@@ -119,7 +122,11 @@ npx matrix-renderer render -- example.yaml --out output/rename --out-type svg --
 |旬の食材カレンダー|[YAML](examples/seasonal-produce.yaml)　[PNG](output/seasonal-produce.png)　[SVG](output/seasonal-produce.svg)||
 |社内標準テクノロジー・カタログ|[YAML](examples/technology-radar.yaml)　[PNG](output/technology-radar.png)　[SVG](output/technology-radar.svg)||
 
-## 関連記事
+## 📰Articles / 関連記事
 
 * [作図ツールで作るマトリクス図のメンテがつらいのでYAMLから自動生成するCLIツールを作りました](https://developer.mamezou-tech.com/blogs/2026/10/29/introduction-tool_matrix-renderer/)
 
+## 📘Developer Guide / 開発者ガイド
+
+* [Developer Guide](docs/en/development.md)
+* [開発者向けガイド](docs/ja/development.md)
