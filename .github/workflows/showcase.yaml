@@ -2,6 +2,8 @@ name: Publish showcase
 
 # サンプルやページの変更時と、手動実行時に再生成する
 on:
+  schedule:
+    - cron: '0 0 * * *' # 毎日0時に実行
   push:
     branches: [main]
     paths:
