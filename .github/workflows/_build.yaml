@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   verify:
-    name: Verify
+    name: Build, Test and Verify
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
